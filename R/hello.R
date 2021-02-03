@@ -32,3 +32,5 @@ hello <- function() {
 # put your tests in the tests/testthat/ folder. The files must start with test_
 # then bundle with devtools::document()
 # then run test with devtools::test()
+
+# devtools::install() to install R package so that it becomes part of your library
