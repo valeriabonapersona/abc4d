@@ -160,7 +160,6 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas, dodgy_cells = NU
 
   # Specify damaged areas ---------------------------------------------------
   damaged_areas_sample <- specify_damage(sample_id = sample, data = damaged_areas)
-  threshold <- dodgy_cells %>% filter(sample_id = sample)
 
   # Areas checks ------------------------------------------------------------
   ## correct if you change category variable levels
@@ -221,14 +220,21 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas, dodgy_cells = NU
 
   # remove dodgy cells if necessary
   if (!is.null(dodgy_cells)) {
+
+    # select what to filter
+    threshold <- dodgy_cells %>%
+      dplyr::filter(sample_id == sample) %>%
+      dplyr::select(my_grouping, threshold)
+
+    # filter out dodgy cells
     clean_data <- clean_data %>%
 
       # merge with df
-      left_join(threshold, by = c("sample_id", "my_grouping")) %>%
+      dplyr::left_join(threshold, by = "my_grouping") %>%
 
       # remove cells on upper boundary
-      filter(is.na(threshold) | threshold>maxInt) %>%
-      select(-maxInt_filter)
+      dplyr::filter(is.na(threshold) | threshold>maxInt) %>%
+      dplyr::select(-threshold)
   }
 
   # select relevant variables
@@ -256,13 +262,6 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas, dodgy_cells = NU
     "final_counts" = nrow(clean_data))
 
   saveRDS(removed_counts, file = paste0(path_removed, sample_id, "_removed_counts_summary.RDS"))
-
-
-  # Warnings ----------------------------------------------------------------
-  if ("yes" %in% pot_damaged$potentially_damaged == TRUE) warning(
-    paste0("Counts from damaged areas have been deleted and replaced by mirroring cells of that brain area of the opposite hemisphere.
-  For details see ", sample_id, "_removed_counts_summary.RDS in specified folder."))
-
 
 
   # Return ------------------------------------------------------------------
