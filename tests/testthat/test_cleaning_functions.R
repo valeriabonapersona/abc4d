@@ -36,3 +36,14 @@ test_that("normalize() modifies string", {
   expect_equal(identical(x,y), FALSE)
 
 })
+
+test_that("remove_blinding() returns a dataframe with the correct columns' names", {
+
+  x <- data.frame(sample_id = c(1:20), blinded_group = c(rep(c(1:4), each = 5)))
+  y <- data.frame(blinded_group = 1:4, key = c("control", "drug_a", "drug_b", "drug_c"))
+
+  z <- remove_blinding(x,y)
+  expect_named(z, c("sample_id", "group"))
+
+})
+

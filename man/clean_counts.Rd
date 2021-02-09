@@ -52,9 +52,9 @@ delivered. The warning message specifies if brain areas removed during the clean
 
 }
 \description{
-This function performs the following actions: 1) removes the
-halo around the brain and ventricles, 2) filters brain areas of interest,
-3) removes damaged areas, and 4) reimputes the damaged areas by mirroring the
+This function cleans the annotated cells by: 1) removing the
+halo around the brain and ventricles, 2) filtering brain areas of interest,
+3) removing damaged areas, and 4) re-imputing the damaged areas by mirroring the
 other hemisphere. clean_counts() saves two .RDS files in the path specified
 for each sample processed. The first file (*clean_counts.RDS) contains the xyz
 coordinates of cells that met the cleaning criteria, as well as their categorization
