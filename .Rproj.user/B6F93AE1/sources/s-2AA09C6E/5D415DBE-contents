@@ -92,7 +92,8 @@ specify_damage <- function(sample_id, data) {
 #' @param warning_percentage Number between 0 and 1. It defines a threshold after which a warning message is
 #' delivered. The warning message specifies if brain areas removed during the cleaning procedure had
 #' (abnormally) high cells. 0 will never return a warning, 1 will always.
-#' @param my_path String to specify path where outputs will be saved.
+#' @param path_cleaned String to specify path where cleaned annotated cells will be saved
+#' @param path_removed String to specify path where summary of removed cells will be saved
 #'
 #' @return
 #' @export
@@ -101,7 +102,7 @@ specify_damage <- function(sample_id, data) {
 
 clean_counts <- function(sample_id, data, atlas, damaged_areas,
                          out_mask = out_mask, vent_mask = vent_mask,
-                         warning_percentage = 0.2, my_path) {
+                         warning_percentage = 0.2, path_cleaned, path_removed) {
 
 
   ## add checks for my_path and sample_id (must be strings)
@@ -163,17 +164,17 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
     data %>%
 
     # Remove halo
-    mutate_at(vars(xPos, yPos, zPos), floor) %>%
-    anti_join(rbind(out_mask, vent_mask)) %>%
+    dplyr::mutate_at(vars(xPos, yPos, zPos), floor) %>%
+    dplyr::anti_join(rbind(out_mask, vent_mask)) %>%
     { . ->> no_halo} %>% # saves intermediate output
 
     # Remove background and brain areas not interpretables
-    filter(id != 0,
+    dplyr::filter(id != 0,
            category %in% c(0,2))  %>%
     { . ->> no_background} %>% # saves intermediate output ##CHECK ALL AREAS HAVE CATEGORIZATION
 
     # Split zPos (hemispheres) into half. Left areas will be < 0, right areas will be > 0.
-    mutate(zPos = zPos - 228, #dimensions of template: x*y*456
+    dplyr::mutate(zPos = zPos - 228, #dimensions of template: x*y*456
            hemisphere = case_when(zPos < 0 ~ "left",
                                   zPos > 0 ~ "right",
                                   TRUE ~ "midline")) %>%
@@ -181,25 +182,25 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
     { . ->> hemisphere_sep} %>% # saves intermediate output
 
     # Clean up factors
-    droplevels() %>% # necessary?
+    dplyr::droplevels() %>% # necessary?
 
     # Remove damaged areas
-    mutate(grouping_hemisphere = paste(.$my_grouping, hemisphere, sep="_"),
+    dplyr::mutate(grouping_hemisphere = paste(.$my_grouping, hemisphere, sep="_"),
            potentially_damaged = case_when(grouping_hemisphere %in%
                                              damaged_areas_sample$area_hemisphere ~ "yes",
                                            TRUE ~ "no")) %>%
 
     { . ->> pot_damaged}  %>% # saves intermediate output
 
-    filter(potentially_damaged != "yes") %>%
+    dplyr::filter(potentially_damaged != "yes") %>%
 
     # Impute mirror of other hemisphere for damaged brain areas removed
-    full_join(
+    dplyr::full_join(
       pot_damaged %>%
-        filter(my_grouping %in% damaged_areas_sample$area,
+        dplyr::filter(my_grouping %in% damaged_areas_sample$area,
                !hemisphere %in% c(levels(damaged_areas_sample$hemisphere), "midline")) %>%
-        mutate(zPos = .$zPos * -1,
-               hemisphere = case_when(.$hemisphere == "right" ~ "left",
+        dplyr::mutate(zPos = .$zPos * -1,
+               hemisphere = dplyr::case_when(.$hemisphere == "right" ~ "left",
                                       .$hemisphere == "left" ~ "right"),
                grouping_hemisphere = paste(.$my_grouping, hemisphere, sep = "_"))
     )
@@ -208,7 +209,7 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
 
 
   # Save output cleancounts in temp file
-  saveRDS(clean_data, file = paste0(my_path, sample_id, "_clean_cells.RDS"))
+  saveRDS(clean_data, file = paste0(path_cleaned, sample_id, "_clean_cells.RDS"))
 
   # Removed counts -------------------------------------------------------------
 
@@ -222,7 +223,7 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
                                               !pot_damaged$hemisphere %in% c(levels(damaged_areas_sample$hemisphere), "midline"),]),
     "final_counts" = nrow(clean_data))
 
-  saveRDS(removed_counts, file = paste0(my_path, sample_id, "_removed_counts_summary.RDS"))
+  saveRDS(removed_counts, file = paste0(path_removed, sample_id, "_removed_counts_summary.RDS"))
 
 
   # Warnings ----------------------------------------------------------------

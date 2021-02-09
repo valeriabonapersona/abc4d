@@ -12,7 +12,8 @@ clean_counts(
   out_mask = out_mask,
   vent_mask = vent_mask,
   warning_percentage = 0.2,
-  my_path
+  path_cleaned,
+  path_removed
 )
 }
 \arguments{
@@ -46,7 +47,9 @@ to halo and unspecific binding of the antibody. Ask Heike more info}
 delivered. The warning message specifies if brain areas removed during the cleaning procedure had
 (abnormally) high cells. 0 will never return a warning, 1 will always.}
 
-\item{my_path}{String to specify path where outputs will be saved.}
+\item{path_cleaned}{String to specify path where cleaned annotated cells will be saved}
+
+\item{path_removed}{String to specify path where summary of removed cells will be saved}
 }
 \value{
 
