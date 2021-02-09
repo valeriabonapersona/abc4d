@@ -182,7 +182,7 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
     { . ->> hemisphere_sep} %>% # saves intermediate output
 
     # Clean up factors
-    dplyr::droplevels() %>% # necessary?
+    droplevels() %>% # necessary?
 
     # Remove damaged areas
     dplyr::mutate(grouping_hemisphere = paste(.$my_grouping, hemisphere, sep="_"),
