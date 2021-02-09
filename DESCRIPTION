@@ -16,7 +16,8 @@ Imports:
     assertthat,
     rmarkdown,
     MASS,
-    EnvStats
+    EnvStats,
+    stringr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

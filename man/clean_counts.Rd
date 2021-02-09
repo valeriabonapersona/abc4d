@@ -9,6 +9,7 @@ clean_counts(
   data,
   atlas,
   damaged_areas,
+  dodgy_cells = NULL,
   out_mask = out_mask,
   vent_mask = vent_mask,
   warning_percentage = 0.2,
@@ -34,6 +35,11 @@ the function specify_damage(), relevant damaged areas will be automatically sele
 Requires the following variables "area" with the acronym of the brain area that matches
 the "grouping" variable of the areas dataframe (see above); "hemisphere" which specify
 the hemisphere where the damage occurs ("right", "left").}
+
+\item{dodgy_cells}{Dataframe with information about cells with abnormally high intensity (likely to be
+unspecific binding, for example after checking scans). Three columns named "sample_id" (id of the sample),
+"my_grouping" (brain area), and "threshold" (threshold above which cells are considered "spots". Filters based
+on maximum intensity). This dataframe can be null.}
 
 \item{out_mask}{Mask to identify outer part of brain to be removed due to halo.
 Ask Heike more info: Created in python by finding all 0 that border the brain (next to non-zero values)

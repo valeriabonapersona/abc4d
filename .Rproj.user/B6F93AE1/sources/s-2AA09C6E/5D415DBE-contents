@@ -83,6 +83,10 @@ specify_damage <- function(sample_id, data) {
 #' Requires the following variables "area" with the acronym of the brain area that matches
 #' the "grouping" variable of the areas dataframe (see above); "hemisphere" which specify
 #' the hemisphere where the damage occurs ("right", "left").
+#' @param dodgy_cells Dataframe with information about cells with abnormally high intensity (likely to be
+#' unspecific binding, for example after checking scans). Three columns named "sample_id" (id of the sample),
+#' "my_grouping" (brain area), and "threshold" (threshold above which cells are considered "spots". Filters based
+#' on maximum intensity). This dataframe can be null.
 #' @param out_mask Mask to identify outer part of brain to be removed due to halo.
 #' Ask Heike more info: Created in python by finding all 0 that border the brain (next to non-zero values)
 #' from there move 3 voxels in all directions (k). Create new matrix with non-zero values for
@@ -100,7 +104,7 @@ specify_damage <- function(sample_id, data) {
 #'
 #' @examples For a thorough example, please see XX.
 
-clean_counts <- function(sample_id, data, atlas, damaged_areas,
+clean_counts <- function(sample_id, data, atlas, damaged_areas, dodgy_cells = NULL,
                          out_mask = out_mask, vent_mask = vent_mask,
                          warning_percentage = 0.2, path_cleaned, path_removed) {
 
@@ -132,6 +136,14 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
   assertthat::has_name(atlas, "category")
   assertthat::has_name(atlas, "my_grouping")
 
+  # if dodgy_cells is not null, do all checks
+  if(!is.null(dodgy_cells)) {
+    assertthat::assert_that(is.data.frame(dodgy_cells))
+    assertthat::has_name(dodgy_cells, "sample_id")
+    assertthat::has_name(dodgy_cells, "my_grouping")
+    assertthat::has_name(dodgy_cells, "threshold")
+  }
+
   # warning_percentage must be between 0 and 1
   assertthat::is.number(warning_percentage)
   if(!warning_percentage >= 0 & ! warning_percentage <= 1) stop ("warning_percentage provided is not a number between 0 and 1")
@@ -148,6 +160,7 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
 
   # Specify damaged areas ---------------------------------------------------
   damaged_areas_sample <- specify_damage(sample_id = sample, data = damaged_areas)
+  threshold <- dodgy_cells %>% filter(sample_id = sample)
 
   # Areas checks ------------------------------------------------------------
   ## correct if you change category variable levels
@@ -206,6 +219,25 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
     )
 
 
+  # remove dodgy cells if necessary
+  if (!is.null(dodgy_cells)) {
+    clean_data <- clean_data %>%
+
+      # merge with df
+      left_join(threshold, by = c("sample_id", "my_grouping")) %>%
+
+      # remove cells on upper boundary
+      filter(is.na(threshold) | threshold>maxInt) %>%
+      select(-maxInt_filter)
+  }
+
+  # select relevant variables
+  clean_data <- clean_data %>%
+
+    # select only vars of interest
+    dplyr::select(dplyr::ends_with("Pos"), maxInt, my_grouping, hemisphere)
+
+
 
 
   # Save output cleancounts in temp file
@@ -227,11 +259,6 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
 
 
   # Warnings ----------------------------------------------------------------
-  ## midline values --> add this in the document where you calculate per brain area
-  if ("midline" %in% levels(factor(clean_data$hemisphere)) == TRUE) warning(
-    paste0("Some counts are on the midline and cannot be divided in right / left hemisphere.
-  For details see ", sample_id, "_removed_counts_summary.RDS in specified folder.")) ## remove??
-
   if ("yes" %in% pot_damaged$potentially_damaged == TRUE) warning(
     paste0("Counts from damaged areas have been deleted and replaced by mirroring cells of that brain area of the opposite hemisphere.
   For details see ", sample_id, "_removed_counts_summary.RDS in specified folder."))
@@ -278,15 +305,15 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
 cleaned_counts_to_df <- function(path_cleaned) {
 
   file_names <- list.files(path = path_cleaned)
-  file_list <- file_names[str_detect(file_names, "_cleaned_cells.RDS")]
-  data_ls <- lapply(paste0(counts_cleaned, file_list), readRDS)
+  file_list <- file_names[stringr::str_detect(file_names, "_clean_cells.RDS")]
+  data_ls <- lapply(paste0(path_cleaned, file_list), readRDS)
 
   # get sample names
-  samples <-  str_remove(file_list, "_clean_cells.RDS")
+  samples <-  stringr::str_remove(file_list, "_clean_cells.RDS")
   names(data_ls) <- samples
 
   # from list to data frame
-  bind_rows(data_ls, .id = "sample_id")
+  dplyr::bind_rows(data_ls, .id = "sample_id")
 }
 
 # remove_blinding --------------------------------------------------------------
