@@ -3,7 +3,7 @@
     "path": "~/surfdrive/Work/PhD/my_packages/abc3d/R/cleaning_functions.R",
     "project_path": "R/cleaning_functions.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "413578305",
     "contents": "",
     "dirty": false,
     "created": 1612800647453.0,
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "30,53",
-        "scrollLine": "0"
+        "cursorPosition": "281,26",
+        "scrollLine": "254"
     },
-    "folds": "",
-    "lastKnownWriteTime": 1612804625,
+    "folds": "103|61|242|0|\n",
+    "lastKnownWriteTime": 1612862932,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1612804625845,
+    "last_content_update": 1612862932116,
     "read_only": false,
     "read_only_alternatives": []
 }

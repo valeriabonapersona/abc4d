@@ -27,3 +27,12 @@ test_that("specify_damage() provides correct output", {
    res <- specify_damage(my_sample, x)
    expect_equal(nrow(res), 2)
 })
+
+test_that("normalize() modifies string", {
+
+  x <- rpois(100, 6)
+  y <- normalize(x)
+
+  expect_equal(identical(x,y), FALSE)
+
+})
