@@ -229,12 +229,12 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
   # Warnings ----------------------------------------------------------------
   ## midline values --> add this in the document where you calculate per brain area
   if ("midline" %in% levels(factor(clean_data$hemisphere)) == TRUE) warning(
-    'Some counts are on the midline and cannot be divided in right / left hemisphere.
-  For details see *sample*_removed_counts_summary.RDS in specified folder.')
+    paste0("Some counts are on the midline and cannot be divided in right / left hemisphere.
+  For details see ", sample_id, "_removed_counts_summary.RDS in specified folder.")) ## remove??
 
   if ("yes" %in% pot_damaged$potentially_damaged == TRUE) warning(
-    "Counts from damaged areas have been deleted and replaced by mirroring cells of that brain area of the opposite hemisphere.
-  For details see *sample*_removed_counts_summary.RDS in specified folder.")
+    paste0("Counts from damaged areas have been deleted and replaced by mirroring cells of that brain area of the opposite hemisphere.
+  For details see ", sample_id, "_removed_counts_summary.RDS in specified folder."))
 
 
 
@@ -257,6 +257,37 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas,
 #   7 = not reliable, around ventricles and small
 
 
+
+
+
+# Clean counts to df ------------------------------------------------------
+#' @title Merges in one data frame all cleaned annotated cells
+#' @description This function is a wrapper to dplyr functions to merge together
+#' the multiple files output from cleaned_counts(). Only RDS files with extension
+#' '_clean_cells.RDS' will be used.
+#'
+#'
+#' @param path_cleaned String to specify path where cleaned annotated cells will be saved
+
+#'
+#' @return
+#' @export
+#'
+#' @examples For a thorough example, please see XX.
+
+cleaned_counts_to_df <- function(path_cleaned) {
+
+  file_names <- list.files(path = path_cleaned)
+  file_list <- file_names[str_detect(file_names, "_cleaned_cells.RDS")]
+  data_ls <- lapply(paste0(counts_cleaned, file_list), readRDS)
+
+  # get sample names
+  samples <-  str_remove(file_list, "_clean_cells.RDS")
+  names(data_ls) <- samples
+
+  # from list to data frame
+  bind_rows(data_ls, .id = "sample_id")
+}
 
 # remove_blinding --------------------------------------------------------------
 #' @title Remove (or scramble) blinding of your groups
