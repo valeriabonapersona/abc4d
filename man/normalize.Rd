@@ -14,7 +14,7 @@ normalize(x)
 }
 \description{
 Wrapper functon to boxcox from EnvStats to be able to normalize
-in one step within pipes %>% structure
+in one step within pipes.
 }
 \examples{
 x <- rpois(100, 6)

@@ -286,29 +286,30 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas, dodgy_cells = NU
 
 
 
-# Clean counts to df ------------------------------------------------------
-#' @title Merges in one data frame all cleaned annotated cells
-#' @description This function is a wrapper to dplyr functions to merge together
-#' the multiple files output from cleaned_counts(). Only RDS files with extension
-#' '_clean_cells.RDS' will be used.
+# samples_files_to_df ------------------------------------------------------
+#' @title Merges in one data frame all the separate samples' files
+#' @description Wrapper to dplyr functions to merge together multiple files output
+#' from cleaned_counts(). It can merge both the cleaned cell files (extension = "_clean_cells.RDS"),
+#' as well as the summaries of the removed cells (extension = "_removed_counts_summary.RDS").
 #'
 #'
-#' @param path_cleaned String to specify path where cleaned annotated cells will be saved
-
+#' @param path String for path of location files. It does not matter if other files are present
+#' in this folder. Only files with the specified extension will be added.
+#' @param extension Final part of the string of the files. Same as output of cleaned_counts()
 #'
 #' @return
 #' @export
 #'
 #' @examples For a thorough example, please see XX.
 
-cleaned_counts_to_df <- function(path_cleaned) {
+samples_files_to_df <- function(path, extension = c("_clean_cells.RDS", "_removed_counts_summary.RDS")) {
 
-  file_names <- list.files(path = path_cleaned)
-  file_list <- file_names[stringr::str_detect(file_names, "_clean_cells.RDS")]
-  data_ls <- lapply(paste0(path_cleaned, file_list), readRDS)
+  file_names <- list.files(path = path)
+  file_list <- file_names[stringr::str_detect(file_names, extension)]
+  data_ls <- lapply(paste0(path, file_list), readRDS)
 
   # get sample names
-  samples <-  stringr::str_remove(file_list, "_clean_cells.RDS")
+  samples <-  stringr::str_remove(file_list, extension)
   names(data_ls) <- samples
 
   # from list to data frame
@@ -376,7 +377,7 @@ remove_blinding <- function(data, key, scramble = FALSE) {
 # Normalization with boxcox -----------------------------------------------
 #' @title Normalize cell counts with boxcox transformation
 #' @description Wrapper functon to boxcox from EnvStats to be able to normalize
-#' in one step within pipes %>% structure
+#' in one step within pipes.
 #'
 #'
 #' @param x Numeric vector with values to normalize
