@@ -3,7 +3,7 @@
     "path": "~/surfdrive/Work/PhD/my_packages/abc3d/tests/testthat/test_tryout.R",
     "project_path": "tests/testthat/test_tryout.R",
     "type": "r_source",
-    "hash": "107626439",
+    "hash": "667837097",
     "contents": "",
     "dirty": false,
     "created": 1612800811597.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "35,0",
-        "scrollLine": "2"
+        "cursorPosition": "15,0",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1613135210,
+    "lastKnownWriteTime": 1613140449,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1613135210242,
+    "last_content_update": 1613140449050,
     "read_only": false,
     "read_only_alternatives": []
 }

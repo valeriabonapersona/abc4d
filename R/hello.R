@@ -17,6 +17,8 @@ hello <- function() {
   print("Hello, world!")
 }
 
+# make function to create folder structure?
+
 
 # to build the package
 # devtools::document()

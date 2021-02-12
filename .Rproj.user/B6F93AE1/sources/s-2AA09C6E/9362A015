@@ -1,0 +1,27 @@
+{
+    "id": "9362A015",
+    "path": "~/surfdrive/Work/PhD/my_packages/abc3d/R/summarize_to_region.R",
+    "project_path": "R/summarize_to_region.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1613137821882.0,
+    "source_on_save": false,
+    "relative_order": 12,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "145,56",
+        "scrollLine": "127"
+    },
+    "folds": "1|25|71|0|\n",
+    "lastKnownWriteTime": 1613140657,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1613140682238,
+    "read_only": false,
+    "read_only_alternatives": []
+}
