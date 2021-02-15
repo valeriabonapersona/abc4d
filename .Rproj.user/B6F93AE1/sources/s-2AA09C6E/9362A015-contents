@@ -86,8 +86,9 @@ adapt_estimation_atlas <- function(estimation_atlas, adj_aba_atlas) {
 #'
 #' @param estimation_atlas estimation atlas already adjusted for the brain areas of interest. Can
 #' be output from adapt_estimation_atlas().
+#' @param meta datafame with meta-information about samples. It expects a variable named "sample_id".
 #' @param cells_type type of cells from estimation atlas to be used for count correction. Look at the variables
-#' of estimation_atlas for types. If not specified, uses all types
+#' of estimation_atlas for types. If not specified, uses all types.
 #'
 #' @return
 #' @export
@@ -107,15 +108,22 @@ adapt_estimation_atlas <- function(estimation_atlas, adj_aba_atlas) {
 #' glia = sample(10000, 5)
 #' )
 #'
-#'summarize_per_region(x,y)
+#' z <- data.frame(
+#' sample_id = c("a", "b", "c"),
+#' batch = c(1,1,2),
+#' group = c("A", "B", "A")
+#' )
+#'
+#'summarize_per_region(x,y,z)
 
 
 ## upload data to package
-summarize_per_region <- function(xyz_coordinates, estimation_atlas, cells_type = "cells") {
+summarize_per_region <- function(xyz_coordinates, estimation_atlas, meta, cells_type = "cells") {
 
   # check that function inputs have correct class
   assertthat::assert_that(is.data.frame(xyz_coordinates))
   assertthat::assert_that(is.data.frame(estimation_atlas))
+  assertthat::assert_that(is.data.frame(meta))
 
   # check that there are the correct variable names
   assertthat::has_name(xyz_coordinates, "sample_id")
@@ -123,6 +131,8 @@ summarize_per_region <- function(xyz_coordinates, estimation_atlas, cells_type =
   assertthat::has_name(xyz_coordinates, "maxInt")
 
   assertthat::has_name(estimation_atlas, "my_grouping")
+
+  assertthat::has_name(meta, "sample_id")
 
   # check that Regions and name have the same levels
   if(cells_type != "cells"){
@@ -153,6 +163,83 @@ summarize_per_region <- function(xyz_coordinates, estimation_atlas, cells_type =
 
     # clean up tibble
     dplyr::ungroup() %>%
-    droplevels()
+    droplevels() %>%
+
+    # merge with meta information
+    left_join(meta, by = "sample_id")
 
 }
+
+
+# preprocess_per_region --------------------------------------------------
+#' @title Normalize and scale for region-based analyses
+#'
+#' @description Wrapper around dplyr functions to normalize and standardize
+#' the count and intensity variables. It expects the output of summarize_per_region.
+#'
+#' @param region_df region_based dataframe. Each row is a brain area ("my_grouping") per sample ("sample_id"), where
+#' corrected cell count ("cells_perthousand") and average maximum intensity of the protein of interest ("intensity_ave") have been summarized.
+#' It can be output from summarize_per_region(). The data will be normalized according to "batch",
+#' and it will be scaled per unit ("cells_perthousand_box_scaled", "intensity_ave_box_scaled"),
+#' as well as per brain area per unit ("cells_perthousand_box_scaled_ba", "intensity_ave_box_scaled_ba")
+#' @param
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' x <- data.frame(
+#' batch = rep(c(1,1,2,2), each = 5),
+#' group = rep(c("control", "exp", "exp", "control"), each = 5),
+#' sample_id = rep(c("a", "b", "c", "d"), each = 5),
+#' my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 4),
+#' intensity_ave = sample(10000, 20, replace = TRUE),
+#' cells_perthousand = abs(rnorm(20))
+#' )
+#'
+#' preprocess_per_region(x)
+
+
+preprocess_per_region <- function(region_df) {
+
+  # check that function inputs have correct class
+  assertthat::assert_that(is.data.frame(region_df))
+  # check that there are the correct variable names
+  assertthat::has_name(region_df, "sample_id")
+  assertthat::has_name(region_df, "my_grouping")
+  assertthat::has_name(region_df, "intensity_ave")
+  assertthat::has_name(region_df, "cells_perthousand")
+  assertthat::has_name(region_df, "batch")
+
+  region_df %>%
+
+    # box cox transformation
+    dplyr::group_by(batch) %>%
+    dplyr::mutate(
+      cells_perthousand_box = normalize(cells_perthousand),
+      intensity_ave_box = normalize(intensity_ave)) %>%
+
+    # normalization by block
+    dplyr::mutate(
+      cells_perthousand_box_scaled = scale(cells_perthousand_box),
+      intensity_ave_box_scaled = scale(intensity_ave_box)
+
+    ) %>%
+
+    dplyr::ungroup() %>%
+
+    # normalization by block by brain area
+    dplyr::group_by(batch, my_grouping) %>%
+
+    dplyr::mutate(
+      cells_perthousand_box_scaled_ba = scale(cells_perthousand_box),
+      intensity_ave_box_scaled_ba = scale(intensity_ave_box)
+    ) %>%
+
+    # clean up
+    dplyr::ungroup() %>%
+    droplevels()
+
+
+}
+

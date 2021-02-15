@@ -23,7 +23,7 @@ test_that("adapt_estimation_atlas example works", {
 
 
 
-test_that("adapt_estimation_atlas example works", {
+test_that("summarize_per_region example works", {
 
   # create dataframe
   x <- data.frame(
@@ -44,5 +44,26 @@ test_that("adapt_estimation_atlas example works", {
   z <- summarize_per_region(x,y)
   expect_equal(nrow(z), 11)
 
+
+})
+
+test_that("preprocess_per_region example works", {
+
+  # create dataframe
+   x <- data.frame(
+       batch = rep(c(1,1,2,2), each = 5),
+       group = rep(c("control", "exp", "exp", "control"), each = 5),
+       sample_id = rep(c("a", "b", "c", "d"), each = 5),
+       my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 4),
+       intensity_ave = sample(10000, 20, replace = TRUE),
+       cells_perthousand = abs(rnorm(20))
+   )
+
+   z <- preprocess_per_region(x)
+
+   q <- z %>%
+     dplyr::ungroup() %>%
+     dplyr::group_by(batch, my_grouping) %>%
+     dplyr::mutate(yolo = normalize(cells_perthousand_box))
 
 })

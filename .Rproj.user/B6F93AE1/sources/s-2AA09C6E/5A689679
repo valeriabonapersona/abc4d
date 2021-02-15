@@ -12,13 +12,13 @@
     "properties": {
         "expression": "z",
         "caption": "z",
-        "totalObservations": "11",
-        "displayedObservations": "11",
-        "variables": "7",
-        "cacheKey": "C24D3A62",
+        "totalObservations": "20",
+        "displayedObservations": "20",
+        "variables": "12",
+        "cacheKey": "0952D693",
         "object": "z",
         "environment": "",
-        "contentUrl": "grid_resource/gridviewer.html?env=&obj=z&cache_key=C24D3A62&max_cols=50",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=z&cache_key=0952D693&max_cols=50",
         "preview": "0",
         "source_window_id": "",
         "Source": "Source"
