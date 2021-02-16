@@ -309,7 +309,7 @@ samples_files_to_df <- function(path, extension = c("_clean_cells.RDS", "_remove
   data_ls <- lapply(paste0(path, file_list), readRDS)
 
   # get sample names
-  samples <-  stringr::str_remove(file_list, extension)
+  samples <-  stringr::str_remove_all(file_list, extension)
   names(data_ls) <- samples
 
   # from list to data frame
