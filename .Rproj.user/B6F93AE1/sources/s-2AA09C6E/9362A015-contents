@@ -166,7 +166,7 @@ summarize_per_region <- function(xyz_coordinates, estimation_atlas, meta, cells_
     droplevels() %>%
 
     # merge with meta information
-    left_join(meta, by = "sample_id")
+    dplyr::left_join(meta, by = "sample_id")
 
 }
 
