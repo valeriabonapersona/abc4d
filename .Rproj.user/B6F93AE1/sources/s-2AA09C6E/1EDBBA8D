@@ -1,27 +1,27 @@
 {
-    "id": "BB4A6B0C",
+    "id": "1EDBBA8D",
     "path": "~/surfdrive/Work/PhD/my_packages/abc3d/R/find_most_active.R",
     "project_path": "R/find_most_active.R",
     "type": "r_source",
-    "hash": "2502766060",
+    "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1613487829443.0,
+    "created": 1613493584156.0,
     "source_on_save": false,
-    "relative_order": 9,
+    "relative_order": 10,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "194,5",
-        "scrollLine": "176"
+        "cursorPosition": "112,50",
+        "scrollLine": "95"
     },
-    "folds": "30|59|73|0|\n168|44|210|0|\n",
-    "lastKnownWriteTime": 1613492085,
+    "folds": "",
+    "lastKnownWriteTime": 1613494053,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1613492089588,
+    "last_content_update": 1613494053918,
     "read_only": false,
     "read_only_alternatives": []
 }

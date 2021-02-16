@@ -80,14 +80,18 @@ find_most_active <- function(region_df, high_prob = 0.95) {
 #' @title Prepare weights for simulation
 #'
 #' @description Wrapper around dplyr functions to to prepared weights for simulation study, by considering aba expression
-#' levels as well as increase in protein expression due to the experimental manipulation.
+#' levels as well as increase in protein expression due to the experimental manipulation. It returns a dataframe in long format with one
+#' brain area "my_grouping" per group ("group") where the median ratio between the group ("weight") and the "against_group" has been summarized.
 #'
 #' @param region_df region_based dataframe. Each row is a brain area ("my_grouping") per sample ("sample_id"), where
 #' corrected cell count ("cells_perthousand") has been summarized. It contains a variable "batch" that identifies the unit where to
 #' perform the calculation. If from a block design, "batch" identifies a unique set control and experimental groups (var "group"), with 1 sample each.
 #' It can be output from summarize_per_region() or preprocess_per_region().
-#' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5%.
-#'
+#' @param classifications dataframe with one brain area per row ("my_grouping") classified according to categorizations ("parents") found in Allen Brain Atlas
+#' expression levels of the mRNA of interest. For an example of how to create this dataframe see X.
+#' @param aba_api_summary dataframe where each row is a brain area "acronym" for which the average Allen Brain Atlas expression levels ("mean_expression") and deviation
+#' ("sd_expression") have been summarized. It can be the output of from_aba_api_to_df
+#' @param against_group group from "group" of region_df against which comparisons will be made
 #' @return
 #' @export
 #'
@@ -104,7 +108,7 @@ find_most_active <- function(region_df, high_prob = 0.95) {
 #' find_most_active(x)
 
 
-prepare_aba_weights <- function(region_df, high_prob = 0.95) {
+prepare_sim_weights <- function(region_df, classifications, aba_api_summary, against_group) {
 
   # check that function inputs have correct class
   assertthat::assert_that(is.data.frame(region_df))
@@ -115,37 +119,57 @@ prepare_aba_weights <- function(region_df, high_prob = 0.95) {
   assertthat::has_name(region_df, "batch")
   assertthat::has_name(region_df, "group")
 
+  # classifications
+  assertthat::assert_that(is.data.frame(classifications))
+  # check that there are the correct variable names
+  assertthat::has_name(classifications, "my_grouping")
+  assertthat::has_name(classifications, "parents")
 
-  # high_prob must be a number between 0 and 1
-  assertthat::is.number(high_prob)
-  assertthat::are_equal(all(high_prob >= 0 & high_prob <= 1), TRUE)
+  # classifications
+  assertthat::assert_that(is.data.frame(aba_api_summary))
+  # check that there are the correct variable names
+  assertthat::has_name(aba_api_summary, "acronym")
+  assertthat::has_name(aba_api_summary, "mean_expression")
+  assertthat::has_name(aba_api_summary, "sd_expression")
 
-  cells_ba_probs <- region_df %>%
+  # check against_group
+  assertthat::are_equal(length(against_group),1)
+  assertthat::are_equal(against_group %in% region_df$group, TRUE)
 
-    # get upper quantile
-    dplyr::group_by(batch) %>%
-    dplyr::summarize(high_count = quantile(cells_perthousand, probs = high_prob)) %>%
+  # create dataset with weights
+  weights <- classifications %>%
 
-    # clean up
-    dplyr::ungroup() %>%
+    # get cfos values
+    left_join(aba_cfos %>% rename(parents = acronym), by = "parents") %>%
 
-    # join with cells_ba
-    dplyr::right_join(region_df, by = "batch")
+    # areas without expression levels get average of the rest
+    mutate(
+      mean_expression = ifelse(is.na(mean_expression), mean(mean_expression, na.rm = TRUE), mean_expression),
+      sd_expression = ifelse(is.na(sd_expression), 0, sd_expression)
+    )
 
 
-  dat <- cells_ba_probs %>%
+  # Weights through time
+  time_weights <- region_df %>%
 
-    # select ba above boundary
-    dplyr::filter(cells_perthousand >= high_count) %>%
+    # select relevant vars
+    select(batch, group, sample_id, my_grouping, cells_perthousand) %>%
 
-    # calculate blocks
-    dplyr::select(batch, group, my_grouping) %>%
-    unique() %>%
+    # get t0 values for ratios
+    left_join(region_df %>%
+                filter(group == against_group) %>%
+                select(batch, my_grouping, cells_perthousand) %>%
+                rename(cells_perthousand_baseline = cells_perthousand),
+              by = c("batch", "my_grouping")) %>%
 
-    dplyr::group_by(group, my_grouping) %>%
-    dplyr::summarize(n_samples = length(unique(batch)))
+    # calculate ratios
+    mutate(ratio = cells_perthousand / cells_perthousand_baseline) %>%
 
-  return(dat)
+    # get median ratio per time point across blocks
+    group_by(group, my_grouping) %>%
+    summarize(weight = median(ratio, na.rm = TRUE))
+
+    return(time_weights)
 
 }
 
