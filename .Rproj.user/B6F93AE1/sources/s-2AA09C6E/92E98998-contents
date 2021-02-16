@@ -292,10 +292,9 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas, dodgy_cells = NU
 #' from cleaned_counts(). It can merge both the cleaned cell files (extension = "_clean_cells.RDS"),
 #' as well as the summaries of the removed cells (extension = "_removed_counts_summary.RDS").
 #'
-#'
 #' @param path String for path of location files. It does not matter if other files are present
 #' in this folder. Only files with the specified extension will be added.
-#' @param extension Final part of the string of the files. Same as output of cleaned_counts()
+#' @param extension Final part of the string of the files. Same as output of cleaned_counts().
 #'
 #' @return
 #' @export
@@ -304,6 +303,7 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas, dodgy_cells = NU
 
 samples_files_to_df <- function(path, extension = c("_clean_cells.RDS", "_removed_counts_summary.RDS")) {
 
+  if (length(extension) > 1) {extension <- extension[[1]]}
   file_names <- list.files(path = path)
   file_list <- file_names[stringr::str_detect(file_names, extension)]
   data_ls <- lapply(paste0(path, file_list), readRDS)
