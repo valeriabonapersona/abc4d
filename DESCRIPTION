@@ -18,7 +18,8 @@ Imports:
     MASS,
     EnvStats,
     stringr,
-    ggplot2
+    ggplot2,
+    ggrepel
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

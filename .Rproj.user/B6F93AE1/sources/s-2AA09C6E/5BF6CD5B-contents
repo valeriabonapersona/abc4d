@@ -11,4 +11,5 @@ usethis::use_package('stringr') # for manipulation to strings
 usethis::use_package('assertthat') # for checks in functions
 usethis::use_package('rmarkdown') # is this necessary for vignettes?
 usethis::use_package('EnvStats') # for boxcox transformation
+usethis::use_package('ggrepel') # to repel labels in ggplot visual
 

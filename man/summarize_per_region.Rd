@@ -4,12 +4,7 @@
 \alias{summarize_per_region}
 \title{Transform xyz coordinates data in a summary per brain region}
 \usage{
-summarize_per_region(
-  xyz_coordinates,
-  estimation_atlas,
-  meta,
-  cells_type = "cells"
-)
+summarize_per_region(xyz_coordinates, estimation_atlas, cells_type = "cells")
 }
 \arguments{
 \item{xyz_coordinates}{dataframe where each row is a cell. It contains the following variables:
@@ -18,8 +13,6 @@ of the protein per identified cell.}
 
 \item{estimation_atlas}{estimation atlas already adjusted for the brain areas of interest. Can
 be output from adapt_estimation_atlas().}
-
-\item{meta}{datafame with meta-information about samples. It expects a variable named "sample_id".}
 
 \item{cells_type}{type of cells from estimation atlas to be used for count correction. Look at the variables
 of estimation_atlas for types. If not specified, uses all types.}
@@ -50,11 +43,6 @@ cells = sample(100000, 5),
 glia = sample(10000, 5)
 )
 
-z <- data.frame(
-sample_id = c("a", "b", "c"),
-batch = c(1,1,2),
-group = c("A", "B", "A")
-)
 
-summarize_per_region(x,y,z)
+summarize_per_region(x,y)
 }

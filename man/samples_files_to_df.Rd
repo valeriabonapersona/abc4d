@@ -13,7 +13,7 @@ samples_files_to_df(
 \item{path}{String for path of location files. It does not matter if other files are present
 in this folder. Only files with the specified extension will be added.}
 
-\item{extension}{Final part of the string of the files. Same as output of cleaned_counts()}
+\item{extension}{Final part of the string of the files. Same as output of cleaned_counts().}
 }
 \value{
 
