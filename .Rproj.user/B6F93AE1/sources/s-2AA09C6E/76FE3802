@@ -1,27 +1,27 @@
 {
-    "id": "5BF6CD5B",
-    "path": "~/surfdrive/Work/PhD/my_packages/abc3d/R/utils.R",
-    "project_path": "R/utils.R",
+    "id": "76FE3802",
+    "path": "~/surfdrive/Work/PhD/my_packages/abc3d/tests/testthat/test_cleaning_functions.R",
+    "project_path": "tests/testthat/test_cleaning_functions.R",
     "type": "r_source",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1612795432380.0,
+    "created": 1613472747952.0,
     "source_on_save": false,
-    "relative_order": 2,
+    "relative_order": 7,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "8,62",
-        "scrollLine": "0"
+        "cursorPosition": "30,0",
+        "scrollLine": "15"
     },
     "folds": "",
-    "lastKnownWriteTime": 1613473736,
+    "lastKnownWriteTime": 1612865760,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1613473736921,
+    "last_content_update": 1612865760,
     "read_only": false,
     "read_only_alternatives": []
 }

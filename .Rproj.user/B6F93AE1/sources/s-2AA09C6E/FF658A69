@@ -1,27 +1,27 @@
 {
-    "id": "8940F161",
-    "path": "~/surfdrive/Work/PhD/my_packages/abc3d/tests/testthat/test_regionbased_dataframe.R",
-    "project_path": "tests/testthat/test_regionbased_dataframe.R",
+    "id": "FF658A69",
+    "path": "~/surfdrive/Work/PhD/my_packages/abc3d/R/pairwise_analysis.R",
+    "project_path": "R/pairwise_analysis.R",
     "type": "r_source",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1613140433743.0,
+    "created": 1613410016152.0,
     "source_on_save": false,
     "relative_order": 13,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "62,0",
-        "scrollLine": "13"
+        "cursorPosition": "128,0",
+        "scrollLine": "6"
     },
-    "folds": "25|49|47|0|\n",
-    "lastKnownWriteTime": 1613399913,
+    "folds": "30|82|126|0|\n95|27|97|4|\n",
+    "lastKnownWriteTime": 1613474046,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1613399913347,
+    "last_content_update": 1613474166131,
     "read_only": false,
     "read_only_alternatives": []
 }
