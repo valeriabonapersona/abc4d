@@ -52,6 +52,34 @@ test_that("sim_most_active_one_batch() example works", {
 })
 
 
+test_that("sim_most_active() example works", {
+
+  # WITH EXPRESSION LEVELS
+  # create dataframes
+  x <- data.frame(
+    group = rep(c("control", "experimental"), each = 5),
+    my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 2),
+    mean_expression = c(rnorm(5, 10, 2), rnorm(5, 13, 2)),
+    sd_expression = abs(rnorm(10)),
+    weight = c(rep(1, 5), rnorm(5, 2, 1))
+  )
+
+  y <- sim_most_active(x, samples_per_group = 3)
+  testthat::expect_equal(nrow(y), 3)
+
+
+  # WITHOUT EXPRESSION LEVELS
+  x <- data.frame(
+    group = rep(c("control", "experimental"), each = 5),
+    my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 2)
+  )
+  z <- sim_most_active(x, samples_per_group = 3, weight_by_expression = FALSE)
+
+  # check
+  testthat::expect_equal(nrow(z), 1)
+})
+
+
 
 #' x <- data.frame(
 #' group = rep(c("control", "experimental"), each = 5),

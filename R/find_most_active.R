@@ -358,13 +358,59 @@ sim_most_active_one_batch <- function(weights_df, weight_by_expression = TRUE, w
 
 }
 
-get_ba_one_exp <- function(time_correction_prob = c("yes", "no"), n_samples = n_blocks) {
-  selection_repeated <- replicate(n_samples, get_ba_one_block(time_correction_prob = time_correction_prob))
-  one_exp <- data.frame(selection_repeated) %>%
 
-    # long format
-    pivot_longer(cols = everything(),
-                 names_to = "block", values_to = "my_grouping") %>%
-    pull(my_grouping)
-  return(one_exp)
+# sim_most_active --------------------------------------------
+#' @title Simulate most active brain areas for one experiment
+#'
+#' @description Simulate data for most active brain areas for one experiment. It
+#' can be performed for a completely random process, or by using baseline expression
+#' levels from the Allen Brain Atlas as well as increases due to the experimental manipulation. Returns a dataframe
+#' with the group ("group") and brain area ("my_grouping") of the brain areas simulated to be most active. The variable
+#' "batch" indicates the replicate, and the number of independent batches corresponds to the samples_per_group as specified by the user.
+#'
+#' @param weights_df dataframe resulting from prepare_sim_weights(). dataframe in long format with one
+#' brain area "my_grouping" per group ("group") with the Allen Brain Atlas expression levels
+#' ("mean_expression" and "sd_expression") as well as group-dependent weight ("weight")
+#' @param samples_per_group number of samples per group. If not specified, it's considered 1.
+#' @param weight_by_expression can take values TRUE or FALSE. If not specified, it's considered TRUE. If FALSE, brain areas
+#' are sampled at random from a uniform distribution, and weight_by_group will be ignored. In this case, weight_df requires only
+#' the variables "group" and "my_grouping".
+#' @param weight_by_group can take values TRUE or FALSE. If not specified, is considered TRUE.
+#' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5%.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' x <- data.frame(
+#' group = rep(c("control", "experimental"), each = 5),
+#' my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 2),
+#' mean_expression = c(rnorm(5, 10, 2), rnorm(5, 13, 2)),
+#' sd_expression = abs(rnorm(10)),
+#' weight = c(rep(1, 5), rnorm(5, 3, 1))
+#' )
+#'
+#' sim_most_active(x, samples_per_group = 3, weight_by_expression = FALSE)
+
+sim_most_active <- function(weights_df, samples_per_group = 1, weight_by_expression = TRUE, weight_by_group = TRUE, high_prob = 0.95) {
+
+  # samples_per_group must be a positive integer larger than 1
+  assertthat::is.count(samples_per_group)
+
+  # wrapper around sim_most_active_one_batch
+  selection_repeated <- do.call(rbind, dplyr::lapply(
+    c(1:samples_per_group),
+    function(x) {
+      interim <- sim_most_active_one_batch(weights_df = weights_df,
+                                            weight_by_expression = weight_by_expression,
+                                            weight_by_group = weight_by_group,
+                                            high_prob = high_prob)
+      interim$batch <- x
+      return(interim)
+  }
+
+  ))
+
+
+  return(selection_repeated)
 }
