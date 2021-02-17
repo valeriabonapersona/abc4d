@@ -331,9 +331,10 @@ sim_most_active_one_batch <- function(weights_df, weight_by_expression = TRUE, w
 
     # run weights based on expression
 
-    weights_df$ww <- rnorm(n = 1,
-                           mean = weights_df$mean_expression,
-                           sd = weights_df$sd_expression)
+    weights_df$ww <- do.call(rbind, Map(function(x, y) rnorm(1, mean = x, sd = y), weights_df$mean_expression, weights_df$sd_expression))
+    # weights_df$ww <- rnorm(n = weights_df$mean_expression,
+    #                        mean = weights_df$mean_expression,
+    #                        sd = weights_df$sd_expression)
 
     if (weight_by_group == TRUE) {
       weights_df$ww_probs <- weights_df$ww * weights_df$weight
@@ -404,6 +405,7 @@ sim_most_active <- function(weights_df, samples_per_group = 1, n_exp = 1, weight
   assertthat::are_equal(any(summary == TRUE | summary == FALSE), TRUE)
 
   # wrapper around sim_most_active_one_batch
+
   selection_one_exp <- function(y) {
     do.call(rbind, lapply(c(1:samples_per_group), function(x) {
     interim <- sim_most_active_one_batch(weights_df = weights_df,
