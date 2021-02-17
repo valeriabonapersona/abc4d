@@ -12,14 +12,14 @@ corrected cell count ("cells_perthousand") has been summarized. It contains a va
 perform the calculation. If from a block design, "batch" identifies a unique set control and experimental groups (var "group"), with 1 sample each.
 It can be output from summarize_per_region() or preprocess_per_region().}
 
-\item{high_prob}{number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5%.}
+\item{high_prob}{number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5 per cent.}
 }
 \value{
 
 }
 \description{
 Wrapper around dplyr functions to find most active brain areas
-by looking at the frequency of the top 5% (or other probability specified by the user) of the var distribution.
+by looking at the frequency of the top 5 per cent (or other probability specified by the user) of the var distribution.
 The function returns a dataframe with a summary per group of which brain areas were in the top distribution in how many batches.
 }
 \examples{

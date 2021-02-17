@@ -3,18 +3,16 @@
 #' @title Find most active brain areas
 #'
 #' @description Wrapper around dplyr functions to find most active brain areas
-#' by looking at the frequency of the top 5% (or other probability specified by the user) of the var distribution.
+#' by looking at the frequency of the top 5 per cent (or other probability specified by the user) of the var distribution.
 #' The function returns a dataframe with a summary per group of which brain areas were in the top distribution in how many batches.
 #'
 #' @param region_df region_based dataframe. Each row is a brain area ("my_grouping") per sample ("sample_id"), where
 #' corrected cell count ("cells_perthousand") has been summarized. It contains a variable "batch" that identifies the unit where to
 #' perform the calculation. If from a block design, "batch" identifies a unique set control and experimental groups (var "group"), with 1 sample each.
 #' It can be output from summarize_per_region() or preprocess_per_region().
-#' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5%.
-#'
+#' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5 per cent.
 #' @return
 #' @export
-#'
 #' @examples
 #' x <- data.frame(
 #' batch = rep(c(1,1,2,2), each = 5),
@@ -44,32 +42,32 @@ find_most_active <- function(region_df, high_prob = 0.95) {
   assertthat::is.number(high_prob)
   assertthat::are_equal(all(high_prob >= 0 & high_prob <= 1), TRUE)
 
-    cells_ba_probs <- region_df %>%
+  cells_ba_probs <- region_df %>%
 
-      # get upper quantile
-      dplyr::group_by(batch) %>%
-      dplyr::summarize(high_count = quantile(cells_perthousand, probs = high_prob)) %>%
+    # get upper quantile
+    dplyr::group_by(batch) %>%
+    dplyr::summarize(high_count = quantile(cells_perthousand, probs = high_prob)) %>%
 
-      # clean up
-      dplyr::ungroup() %>%
+    # clean up
+    dplyr::ungroup() %>%
 
-      # join with cells_ba
-      dplyr::right_join(region_df, by = "batch")
+    # join with cells_ba
+    dplyr::right_join(region_df, by = "batch")
 
 
-    dat <- cells_ba_probs %>%
+  dat <- cells_ba_probs %>%
 
-      # select ba above boundary
-      dplyr::filter(cells_perthousand >= high_count) %>%
+    # select ba above boundary
+    dplyr::filter(cells_perthousand >= high_count) %>%
 
-      # calculate blocks
-      dplyr::select(batch, group, my_grouping) %>%
-      unique() %>%
+    # calculate blocks
+    dplyr::select(batch, group, my_grouping) %>%
+    unique() %>%
 
-      dplyr::group_by(group, my_grouping) %>%
-      dplyr::summarize(n_samples = length(unique(batch)))
+    dplyr::group_by(group, my_grouping) %>%
+    dplyr::summarize(n_samples = length(unique(batch)))
 
-    return(dat)
+  return(dat)
 
 }
 
@@ -178,7 +176,7 @@ prepare_sim_weights <- function(region_df, classifications, aba_api_summary, aga
                        dplyr::filter(group == against_group) %>%
                        dplyr::select(batch, my_grouping, cells_perthousand) %>%
                        dplyr::rename(cells_perthousand_baseline = cells_perthousand),
-              by = c("batch", "my_grouping")) %>%
+                     by = c("batch", "my_grouping")) %>%
 
     # calculate ratios
     dplyr::mutate(ratio = cells_perthousand / cells_perthousand_baseline) %>%
@@ -200,7 +198,7 @@ prepare_sim_weights <- function(region_df, classifications, aba_api_summary, aga
     # get time ratio probabilities
     dplyr::left_join(group_weights, by = c("group", "my_grouping"))
 
-    return(weights_sim)
+  return(weights_sim)
 
 }
 
@@ -230,7 +228,7 @@ from_aba_api_to_df <- function(api_in_csv) {
   # find variables from api
   structure_var <-
     names(api_in_csv)[c(which(str_detect(names(api_in_csv), "structure.acronym")),
-                      which(str_detect(names(api_in_csv), "structure.name")))]
+                        which(str_detect(names(api_in_csv), "structure.name")))]
   expression_var <- names(api_in_csv)[which(str_detect(names(api_in_csv), "expression.energy"))][1]
 
   # convert data
@@ -278,12 +276,11 @@ from_aba_api_to_df <- function(api_in_csv) {
 #' @param weights_df dataframe resulting from prepare_sim_weights(). dataframe in long format with one
 #' brain area "my_grouping" per group ("group") with the Allen Brain Atlas expression levels
 #' ("mean_expression" and "sd_expression") as well as group-dependent weight ("weight")
-#'
 #' @param weight_by_expression can take values TRUE or FALSE. If not specified, is considered TRUE. If FALSE, brain areas
 #' are sampled at random from a uniform distribution, and weight_by_group will be ignored. In this case, weight_df requires only
 #' the variables "group" and "my_grouping".
 #' @param weight_by_group can take values TRUE or FALSE. If not specified, is considered TRUE.
-#' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5%.
+#' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5 per cent.
 #'
 #' @return
 #' @export
@@ -334,15 +331,15 @@ sim_most_active_one_batch <- function(weights_df, weight_by_expression = TRUE, w
 
     # run weights based on expression
 
-  weights_df$ww <- rnorm(n = 1,
-                         mean = weights_df$mean_expression,
-                         sd = weights_df$sd_expression)
+    weights_df$ww <- rnorm(n = 1,
+                           mean = weights_df$mean_expression,
+                           sd = weights_df$sd_expression)
 
-  if (weight_by_group == TRUE) {
-    weights_df$ww_probs <- weights_df$ww * weights_df$weight
-  } else {
-    weights_df$ww_probs <- weights_df$ww
-  }
+    if (weight_by_group == TRUE) {
+      weights_df$ww_probs <- weights_df$ww * weights_df$weight
+    } else {
+      weights_df$ww_probs <- weights_df$ww
+    }
   }
 
   # find top quantile
@@ -376,7 +373,7 @@ sim_most_active_one_batch <- function(weights_df, weight_by_expression = TRUE, w
 #' are sampled at random from a uniform distribution, and weight_by_group will be ignored. In this case, weight_df requires only
 #' the variables "group" and "my_grouping".
 #' @param weight_by_group can take values TRUE or FALSE. If not specified, is considered TRUE.
-#' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5%.
+#' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5 per cent.
 #'
 #' @return
 #' @export
@@ -402,12 +399,12 @@ sim_most_active <- function(weights_df, samples_per_group = 1, weight_by_express
     c(1:samples_per_group),
     function(x) {
       interim <- sim_most_active_one_batch(weights_df = weights_df,
-                                            weight_by_expression = weight_by_expression,
-                                            weight_by_group = weight_by_group,
-                                            high_prob = high_prob)
+                                           weight_by_expression = weight_by_expression,
+                                           weight_by_group = weight_by_group,
+                                           high_prob = high_prob)
       interim$batch <- x
       return(interim)
-  }
+    }
 
   ))
 

@@ -22,7 +22,7 @@ the variables "group" and "my_grouping".}
 
 \item{weight_by_group}{can take values TRUE or FALSE. If not specified, is considered TRUE.}
 
-\item{high_prob}{number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5%.}
+\item{high_prob}{number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5 per cent.}
 }
 \value{
 
