@@ -422,7 +422,7 @@ sim_most_active <- function(weights_df, samples_per_group = 1, n_exp = 1, weight
     res <- selection_total
   } else {
     selection_summary <- selection_total %>%
-      dplyr::group_by(exp, batch, my_grouping) %>%
+      dplyr::group_by(exp, group, my_grouping) %>%
       dplyr::summarize(n_samples = length(batch))
     res <- list(
       data = selection_total,
