@@ -16,9 +16,9 @@ test_that("prepare_sim_weights() example works", {
     )
 
     z <- data.frame(
-      acronym = c("CA1", "CA2", "CA3", "DG", "BLA"),
-      mean_expression = rnorm(5, 10, 1),
-      sd_expression = abs(rnorm(5))
+      acronym = c("hippocampus", "cortical subplate"),
+      mean_expression = rnorm(2, 10, 1),
+      sd_expression = abs(rnorm(2))
     )
 
     # run

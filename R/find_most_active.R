@@ -81,7 +81,8 @@ find_most_active <- function(region_df, high_prob = 0.95) {
 #'
 #' @description Wrapper around dplyr functions to to prepared weights for simulation study, by considering aba expression
 #' levels as well as increase in protein expression due to the experimental manipulation. It returns a dataframe in long format with one
-#' brain area "my_grouping" per group ("group") where the median ratio between the group ("weight") and the "against_group" has been summarized.
+#' brain area "my_grouping" per group ("group") with the expression levels ("mean_expression" and "sd_expression") as well as the
+#' median ratio of expression against the against_group ("weight") have been summarized.
 #'
 #' @param region_df region_based dataframe. Each row is a brain area ("my_grouping") per sample ("sample_id"), where
 #' corrected cell count ("cells_perthousand") has been summarized. It contains a variable "batch" that identifies the unit where to
@@ -110,9 +111,9 @@ find_most_active <- function(region_df, high_prob = 0.95) {
 #'   parents = c(rep("hippocampus",4), "cortical subplate")
 #'   )
 #'   z <- data.frame(
-#'   acronym = c("CA1", "CA2", "CA3", "DG", "BLA"),
-#'   mean_expression = rnorm(5, 10, 1),
-#'   sd_expression = abs(rnorm(5))
+#'   acronym = c("hippocampus", "cortical subplate"),
+#'   mean_expression = rnorm(2, 10, 1),
+#'   sd_expression = abs(rnorm(2))
 #'   )
 #'
 #'   # run
@@ -148,11 +149,16 @@ prepare_sim_weights <- function(region_df, classifications, aba_api_summary, aga
   assertthat::are_equal(length(against_group),1)
   assertthat::are_equal(against_group %in% region_df$group, TRUE)
 
+  # vars
+  n_group <- length(unique(region_df$group))
+  main_groups <- unique(region_df$group)
+
   # create dataset with weights
   weights <- classifications %>%
 
     # get cfos values
-    dplyr::left_join(aba_api_summary %>% dplyr::rename(parents = acronym), by = "parents") %>%
+    dplyr::left_join(aba_api_summary %>%
+                       dplyr::rename(parents = acronym), by = "parents") %>%
 
     # areas without expression levels get average of the rest
     dplyr::mutate(
@@ -161,8 +167,8 @@ prepare_sim_weights <- function(region_df, classifications, aba_api_summary, aga
     )
 
 
-  # Weights through time
-  time_weights <- region_df %>%
+  # Weights through all groups
+  group_weights <- region_df %>%
 
     # select relevant vars
     dplyr::select(batch, group, sample_id, my_grouping, cells_perthousand) %>%
@@ -181,7 +187,20 @@ prepare_sim_weights <- function(region_df, classifications, aba_api_summary, aga
     dplyr::group_by(group, my_grouping) %>%
     dplyr::summarize(weight = median(ratio, na.rm = TRUE))
 
-    return(time_weights)
+  # merge expression and weights
+  weights_sim <- do.call("rbind", replicate(n_group, weights, simplify = FALSE))
+
+  weights_sim <- weights_sim %>%
+
+    # get time var and associate different probs
+    dplyr::mutate(
+      group = rep(main_groups, each = nrow(weights))
+    ) %>%
+
+    # get time ratio probabilities
+    dplyr::left_join(group_weights, by = c("group", "my_grouping"))
+
+    return(weights_sim)
 
 }
 

@@ -26,7 +26,8 @@ expression levels of the mRNA of interest. For an example of how to create this 
 \description{
 Wrapper around dplyr functions to to prepared weights for simulation study, by considering aba expression
 levels as well as increase in protein expression due to the experimental manipulation. It returns a dataframe in long format with one
-brain area "my_grouping" per group ("group") where the median ratio between the group ("weight") and the "against_group" has been summarized.
+brain area "my_grouping" per group ("group") with the expression levels ("mean_expression" and "sd_expression") as well as the
+median ratio of expression against the against_group ("weight") have been summarized.
 }
 \examples{
   # create dataframes
@@ -43,9 +44,9 @@ brain area "my_grouping" per group ("group") where the median ratio between the 
   parents = c(rep("hippocampus",4), "cortical subplate")
   )
   z <- data.frame(
-  acronym = c("CA1", "CA2", "CA3", "DG", "BLA"),
-  mean_expression = rnorm(5, 10, 1),
-  sd_expression = abs(rnorm(5))
+  acronym = c("hippocampus", "cortical subplate"),
+  mean_expression = rnorm(2, 10, 1),
+  sd_expression = abs(rnorm(2))
   )
 
   # run
