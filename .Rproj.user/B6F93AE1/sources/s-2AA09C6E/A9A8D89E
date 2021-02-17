@@ -15,10 +15,10 @@
         "totalObservations": "5",
         "displayedObservations": "5",
         "variables": "4",
-        "cacheKey": "706A4BC5",
+        "cacheKey": "B6E667F2",
         "object": "yolo",
         "environment": "",
-        "contentUrl": "grid_resource/gridviewer.html?env=&obj=yolo&cache_key=706A4BC5&max_cols=50",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=yolo&cache_key=B6E667F2&max_cols=50",
         "preview": "0",
         "source_window_id": "",
         "Source": "Source"

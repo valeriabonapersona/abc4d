@@ -369,11 +369,14 @@ sim_most_active_one_batch <- function(weights_df, weight_by_expression = TRUE, w
 #' brain area "my_grouping" per group ("group") with the Allen Brain Atlas expression levels
 #' ("mean_expression" and "sd_expression") as well as group-dependent weight ("weight")
 #' @param samples_per_group number of samples per group. If not specified, it's considered 1.
+#' @param n_exp number of experiments to simulate. If not specified, it's considered 1.
 #' @param weight_by_expression can take values TRUE or FALSE. If not specified, it's considered TRUE. If FALSE, brain areas
 #' are sampled at random from a uniform distribution, and weight_by_group will be ignored. In this case, weight_df requires only
 #' the variables "group" and "my_grouping".
 #' @param weight_by_group can take values TRUE or FALSE. If not specified, is considered TRUE.
 #' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5 per cent.
+#' @param summary can be either TRUE or FALSE. If true, returns a list where the first element is the data, and the second element is a summary
+#' of how many samples per group per experiment select a certain brain area to be most active. If FALSE, only returns the data.
 #'
 #' @return
 #' @export
@@ -387,27 +390,45 @@ sim_most_active_one_batch <- function(weights_df, weight_by_expression = TRUE, w
 #' weight = c(rep(1, 5), rnorm(5, 3, 1))
 #' )
 #'
-#' sim_most_active(x, samples_per_group = 3, weight_by_expression = FALSE)
+#' sim_most_active(x, samples_per_group = 3, weight_by_expression = FALSE, summary = FALSE)
 
-sim_most_active <- function(weights_df, samples_per_group = 1, weight_by_expression = TRUE, weight_by_group = TRUE, high_prob = 0.95) {
+sim_most_active <- function(weights_df, samples_per_group = 1, n_exp = 1, weight_by_expression = TRUE,
+                            weight_by_group = TRUE, high_prob = 0.95, summary = FALSE) {
 
   # samples_per_group must be a positive integer larger than 1
   assertthat::is.count(samples_per_group)
+  assertthat::is.count(samples_per_group)
+
+  # group correction prob must be either TRUE or FALSE. Else, FALSE
+  assertthat::are_equal(length(summary), 1)
+  assertthat::are_equal(any(summary == TRUE | summary == FALSE), TRUE)
 
   # wrapper around sim_most_active_one_batch
-  selection_repeated <- do.call(rbind, lapply(
-    c(1:samples_per_group),
-    function(x) {
-      interim <- sim_most_active_one_batch(weights_df = weights_df,
-                                           weight_by_expression = weight_by_expression,
-                                           weight_by_group = weight_by_group,
-                                           high_prob = high_prob)
-      interim$batch <- x
-      return(interim)
-    }
+  selection_one_exp <- function(y) {
+    do.call(rbind, lapply(c(1:samples_per_group), function(x) {
+    interim <- sim_most_active_one_batch(weights_df = weights_df,
+                                         weight_by_expression = weight_by_expression,
+                                         weight_by_group = weight_by_group,
+                                         high_prob = high_prob)
+    interim$batch <- x
+    interim$exp <- y
+    return(interim)
+    }))
+  }
 
-  ))
+  selection_total <- do.call(rbind, lapply(c(1:n_exp), selection_one_exp))
 
+  if (summary == FALSE) {
+    res <- selection_total
+  } else {
+    selection_summary <- selection_total %>%
+      dplyr::group_by(exp, batch, my_grouping) %>%
+      dplyr::summarize(n_samples = length(batch))
+    res <- list(
+      data = selection_total,
+      summary = selection_summary
+    )
+  }
 
-  return(selection_repeated)
+  return(res)
 }

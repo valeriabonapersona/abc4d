@@ -73,10 +73,10 @@ test_that("sim_most_active() example works", {
     group = rep(c("control", "experimental"), each = 5),
     my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 2)
   )
-  z <- sim_most_active(x, samples_per_group = 3, weight_by_expression = FALSE)
+  z <- sim_most_active(x, samples_per_group = 3, n_exp = 3, weight_by_expression = FALSE)
 
   # check
-  testthat::expect_equal(nrow(z), 1)
+  testthat::expect_equal(nrow(z), 9)
 })
 
 

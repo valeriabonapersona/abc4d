@@ -7,9 +7,11 @@
 sim_most_active(
   weights_df,
   samples_per_group = 1,
+  n_exp = 1,
   weight_by_expression = TRUE,
   weight_by_group = TRUE,
-  high_prob = 0.95
+  high_prob = 0.95,
+  summary = FALSE
 )
 }
 \arguments{
@@ -19,6 +21,8 @@ brain area "my_grouping" per group ("group") with the Allen Brain Atlas expressi
 
 \item{samples_per_group}{number of samples per group. If not specified, it's considered 1.}
 
+\item{n_exp}{number of experiments to simulate. If not specified, it's considered 1.}
+
 \item{weight_by_expression}{can take values TRUE or FALSE. If not specified, it's considered TRUE. If FALSE, brain areas
 are sampled at random from a uniform distribution, and weight_by_group will be ignored. In this case, weight_df requires only
 the variables "group" and "my_grouping".}
@@ -26,6 +30,9 @@ the variables "group" and "my_grouping".}
 \item{weight_by_group}{can take values TRUE or FALSE. If not specified, is considered TRUE.}
 
 \item{high_prob}{number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5 per cent.}
+
+\item{summary}{can be either TRUE or FALSE. If true, returns a list where the first element is the data, and the second element is a summary
+of how many samples per group per experiment select a certain brain area to be most active. If FALSE, only returns the data.}
 }
 \value{
 
@@ -46,5 +53,5 @@ sd_expression = abs(rnorm(10)),
 weight = c(rep(1, 5), rnorm(5, 3, 1))
 )
 
-sim_most_active(x, samples_per_group = 3, weight_by_expression = FALSE)
+sim_most_active(x, samples_per_group = 3, weight_by_expression = FALSE, summary = FALSE)
 }
