@@ -398,7 +398,7 @@ sim_most_active <- function(weights_df, samples_per_group = 1, weight_by_express
   assertthat::is.count(samples_per_group)
 
   # wrapper around sim_most_active_one_batch
-  selection_repeated <- do.call(rbind, dplyr::lapply(
+  selection_repeated <- do.call(rbind, lapply(
     c(1:samples_per_group),
     function(x) {
       interim <- sim_most_active_one_batch(weights_df = weights_df,
