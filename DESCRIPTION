@@ -19,7 +19,8 @@ Imports:
     EnvStats,
     stringr,
     ggplot2,
-    ggrepel
+    ggrepel,
+    tidyr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

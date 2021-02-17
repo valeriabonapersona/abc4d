@@ -210,7 +210,7 @@ prepare_sim_weights <- function(region_df, classifications, aba_api_summary, aga
 #'
 #' @description The data must have been previously downloaded from the Allen Brain Atlas API, and saved as .csv.
 #' The function converts the data so that the final output is a dataframe with a row for each brain area ("acronym"),
-#' the mean ("mean_expression") as well as standard deviation ("sd_expression") of the protein of
+#' its full name ("name") and the mean ("mean_expression") as well as standard deviation ("sd_expression") of the protein of
 #' interest across all Allen Brain Atlas successful experiments.
 #'
 #' @param api_in_csv data downloaded from Allen Brain Atlas api in .csv format
@@ -247,14 +247,14 @@ from_aba_api_to_df <- function(api_in_csv) {
     ) %>%
 
     # remove rows
-    dplyr::drop_na()
+    tidyr::drop_na()
 
 
   # summary stats per brain area
   cfos_summary_stats <- cfos %>%
 
     # per brain area
-    dplyr::group_by(acronym) %>%
+    dplyr::group_by(acronym, name) %>%
     dplyr::summarize(
       mean_expression = mean(expression, na.rm = TRUE),
       sd_expression = sd(expression, na.rm = TRUE)
@@ -267,3 +267,104 @@ from_aba_api_to_df <- function(api_in_csv) {
 
 
 
+# sim_most_active_one_batch --------------------------------------------
+#' @title Simulate most active brain areas for one batch
+#'
+#' @description Simulate data for most active brain areas for one batch. It
+#' can be performed for a completely random process, or by using baseline expression
+#' levels from the Allen Brain Atlas as well as increases due to the experimental manipulation. Returns a dataframe
+#' with the group ("group") and brain area ("my_grouping") of the brain areas simulated to be most active.
+#'
+#' @param weights_df dataframe resulting from prepare_sim_weights(). dataframe in long format with one
+#' brain area "my_grouping" per group ("group") with the Allen Brain Atlas expression levels
+#' ("mean_expression" and "sd_expression") as well as group-dependent weight ("weight")
+#'
+#' @param weight_by_expression can take values TRUE or FALSE. If not specified, is considered TRUE. If FALSE, brain areas
+#' are sampled at random from a uniform distribution, and weight_by_group will be ignored. In this case, weight_df requires only
+#' the variables "group" and "my_grouping".
+#' @param weight_by_group can take values TRUE or FALSE. If not specified, is considered TRUE.
+#' @param high_prob number between 0 and 1 indication the threshold for being a highly active region. 0.95 corresponds to the top 5%.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' x <- data.frame(
+#' group = rep(c("control", "experimental"), each = 5),
+#' my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 2),
+#' mean_expression = c(rnorm(5, 10, 2), rnorm(5, 13, 2)),
+#' sd_expression = abs(rnorm(10)),
+#' weight = c(rep(1, 5), rnorm(5, 3, 1))
+#' )
+#'
+#' sim_most_active_one_batch(x)
+
+
+sim_most_active_one_batch <- function(weights_df, weight_by_expression = TRUE, weight_by_group = TRUE, high_prob = 0.95) {
+
+  # weights_df is a dataframe
+  assertthat::assert_that(is.data.frame(weights_df))
+
+  # weights_df has the required variables
+  assertthat::has_name(weights_df, "group")
+  assertthat::has_name(weights_df, "my_grouping")
+
+  # high_prob must be a number between 0 and 1
+  assertthat::is.number(high_prob)
+  assertthat::are_equal(all(high_prob >= 0 & high_prob <= 1), TRUE)
+
+  # group correction prob must be either TRUE or FALSE. Else, FALSE
+  assertthat::are_equal(length(weight_by_group), 1)
+  assertthat::are_equal(any(weight_by_group == TRUE | weight_by_group == FALSE), TRUE)
+  assertthat::are_equal(length(weight_by_expression), 1)
+  assertthat::are_equal(any(weight_by_group == TRUE | weight_by_group == FALSE), TRUE)
+
+  # simulate baseline levels for each brain area
+  if (weight_by_expression == FALSE) {
+    weights_df$ww_probs = sample(nrow(weights_df))
+  } else {
+
+    # additional checks
+    assertthat::has_name(weights_df, "mean_expression")
+    assertthat::has_name(weights_df, "sd_expression")
+    assertthat::has_name(weights_df, "weight")
+
+    # check that all sds are positives
+    assertthat::are_equal(all(weights_df$sd_expression >= 0), TRUE)
+
+    # run weights based on expression
+
+  weights_df$ww <- rnorm(n = 1,
+                         mean = weights_df$mean_expression,
+                         sd = weights_df$sd_expression)
+
+  if (weight_by_group == TRUE) {
+    weights_df$ww_probs <- weights_df$ww * weights_df$weight
+  } else {
+    weights_df$ww_probs <- weights_df$ww
+  }
+  }
+
+  # find top quantile
+  top_quantile <- quantile(weights_df$ww_probs, prob = high_prob)
+
+  # get brain areas
+  selected_ba <- weights_df %>%
+    dplyr::filter(ww_probs >= top_quantile) %>%
+    dplyr::select(group, my_grouping)
+
+  # output
+  return(selected_ba)
+
+}
+
+get_ba_one_exp <- function(time_correction_prob = c("yes", "no"), n_samples = n_blocks) {
+  selection_repeated <- replicate(n_samples, get_ba_one_block(time_correction_prob = time_correction_prob))
+  one_exp <- data.frame(selection_repeated) %>%
+
+    # long format
+    pivot_longer(cols = everything(),
+                 names_to = "block", values_to = "my_grouping") %>%
+    pull(my_grouping)
+  return(one_exp)
+}

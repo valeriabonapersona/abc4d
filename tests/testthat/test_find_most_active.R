@@ -26,3 +26,39 @@ test_that("prepare_sim_weights() example works", {
   # check
   testthat::expect_equal(nrow(q), 10)
 })
+
+
+test_that("sim_most_active_one_batch() example works", {
+
+  # WITH EXPRESSION LEVELS
+  # create dataframes
+  x <- data.frame(
+   group = rep(c("control", "experimental"), each = 5),
+   my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 2),
+   mean_expression = c(rnorm(5, 10, 2), rnorm(5, 13, 2)),
+   sd_expression = abs(rnorm(10)),
+   weight = c(rep(1, 5), rnorm(5, 3, 1))
+   )
+
+  y <- sim_most_active_one_batch(x)
+  testthat::expect_equal(nrow(y), 1)
+
+
+  # WITHOUT EXPRESSION LEVELS
+  z <- sim_most_active_one_batch(x, weight_by_expression = FALSE)
+
+  # check
+  testthat::expect_equal(nrow(z), 1)
+})
+
+
+
+#' x <- data.frame(
+#' group = rep(c("control", "experimental"), each = 5),
+#' my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 2),
+#' mean_expression = c(rnorm(5, 10, 2), rnorm(5, 13, 2)),
+#' sd_expression = abs(rnorm(10)),
+#' weight = c(rep(1, 5), rnorm(5, 3, 1))
+#' )
+#'
+#' sim_most_active_one_batch(x)
