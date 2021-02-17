@@ -210,7 +210,7 @@ prepare_sim_weights <- function(region_df, classifications, aba_api_summary, aga
 #'
 #' @description The data must have been previously downloaded from the Allen Brain Atlas API, and saved as .csv.
 #' The function converts the data so that the final output is a dataframe with a row for each brain area ("acronym"),
-#' its full name ("name") and the mean ("mean_expression") as well as standard deviation ("sd_expression") of the protein of
+#' the mean ("mean_expression") as well as standard deviation ("sd_expression") of the protein of
 #' interest across all Allen Brain Atlas successful experiments.
 #'
 #' @param api_in_csv data downloaded from Allen Brain Atlas api in .csv format
@@ -254,7 +254,7 @@ from_aba_api_to_df <- function(api_in_csv) {
   cfos_summary_stats <- cfos %>%
 
     # per brain area
-    dplyr::group_by(acronym, name) %>%
+    dplyr::group_by(acronym) %>%
     dplyr::summarize(
       mean_expression = mean(expression, na.rm = TRUE),
       sd_expression = sd(expression, na.rm = TRUE)
