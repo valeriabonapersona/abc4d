@@ -20,7 +20,8 @@ Imports:
     stringr,
     ggplot2,
     ggrepel,
-    tidyr
+    tidyr,
+    ks
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

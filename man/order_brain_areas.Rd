@@ -27,6 +27,14 @@ By using expression levels in different groups (e.g. time points),
 brain areas are ordered .
 }
 \examples{
+# baby example
+x <- data.frame(
+batch = rep(c("1", "2"), 2),
+group = rep(rep(c("0", "90"), each = 2), 2),
+my_grouping = "CA1",
+cells_perthousand_box_scaled_ba = c(-2, -1, 2, 1, -3, -2, 4, 2)
+)
+order_brain_areas(x, order_of_groups = c("0", "90"))
 
 x <- data.frame(
 batch = rep(c(1,1,2,2), each = 5),
