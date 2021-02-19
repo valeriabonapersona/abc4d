@@ -133,7 +133,7 @@ plotting_coordinates_2d <- function(data_main, var_to_colour, cols,
 #' )
 #' my_cols <- c("black", "green", "red")
 #' g <- plotting_all_coordinates_2d(x, "group", my_cols)
-#' ggpubr::ggarrange(g[[1]], g[[2]], g[[3]], nrow = 3, labels = fig_labels, common.legend = TRUE, legend = "top")
+#' ggpubr::ggarrange(g[[1]], g[[2]], g[[3]], nrow = 3, common.legend = TRUE, legend = "top")
 
 
 plotting_all_coordinates_2d <- function(cells_df, var_to_colour = NULL, cols = NULL) {
