@@ -4,15 +4,13 @@
 \alias{calculate_density}
 \title{Calculate density of active cells}
 \usage{
-calculate_density(cells_df, n_slice = 10, path)
+calculate_density(cells_df, n_slice = 10)
 }
 \arguments{
 \item{cells_df}{dataframe with xyz coordinates ("xPos", "yPos", "zPos") of the brain area of interest.
 Each row corresponds to a different cell that belongs to a sample ("sample_id")}
 
 \item{n_slice}{integer which specifies in how many parts to slice the estimate. Default = 10.}
-
-\item{path}{specify path were data for each sample separtely will be saved.}
 }
 \value{
 
@@ -28,4 +26,5 @@ xPos = c(rnorm(100), rpois(100, 2), sample(100),
 yPos = c(rnorm(100), rpois(100, 2), sample(100),
 zPos = c(rnorm(100), rpois(100, 2), sample(100)
 )
+y <- calculate_density(x)
 }
