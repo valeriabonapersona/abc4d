@@ -173,8 +173,7 @@ plotting_all_coordinates_2d <- function(cells_df, var_to_colour = NULL, cols = N
 #' @description Converts xyz coordinates in pixels to voxels of a specified µm size.
 #' The function summarizes the number of samples per group. It outputs a list where the first element ("data")
 #' is the data voxelized, and the second element ("summary") is the data summarized, i.e. the number of samples
-#' per voxel per group; the third element is a summary per group of the median and IQR of the coordinates; the
-#' fourth element is a summary of median and IQR for the scrambled data (if applicable).
+#' per voxel per group
 #'
 #'
 #' @param data dataframe with xyz coordinates ("xPos", "yPox", "zPos") for example output of calculate_density().
@@ -183,9 +182,6 @@ plotting_all_coordinates_2d <- function(cells_df, var_to_colour = NULL, cols = N
 #' For more information, see for example: https://mindresearchfacility.nl/wp-content/uploads/2019/12/Zoom-factor-and-corresponding-NA-and-resolution-by-pixel-size.pdf
 #' Defaults to 5.16
 #' @param voxel_size in µm. Defaults to 30. If you want to specify in pixels, put conv_factor = 1
-#' @param threshold minimum number of samples in a voxel. Default = 1, meaning that it returns all voxels
-#' @param scrambled TRUE or FALSE. Determines whether to conduct the summary statistics on a
-#' "group_scrambled" var or not. Default to FALSE.
 #'
 #' @return
 #' @export
@@ -198,7 +194,7 @@ plotting_all_coordinates_2d <- function(cells_df, var_to_colour = NULL, cols = N
 #' )
 #' y <- voxelize(x, voxel_size = 100)
 
-voxelize <- function(data, conv_factor = 5.16, voxel_size = 30, threshold = 1, scrambled = FALSE) {
+voxelize <- function(data, conv_factor = 5.16, voxel_size = 30) {
 
   # data is a dataframe with the required variables
   assertthat::assert_that(is.data.frame(data))
@@ -212,15 +208,11 @@ voxelize <- function(data, conv_factor = 5.16, voxel_size = 30, threshold = 1, s
   # correct class
   assertthat::is.number(conv_factor)
   assertthat::is.number(voxel_size)
-  assertthat::is.count(threshold)
 
   # size conv_factor and voxel_size is 1
   assertthat::are_equal(length(conv_factor), 1)
   assertthat::are_equal(length(voxel_size), 1)
   assertthat::are_equal(voxel_size != 0, FALSE)
-  assertthat::are_equal(any(scrambled == TRUE, scrambled == FALSE), TRUE)
-  assertthat::are_equal(length(scrambled), 1)
-
 
   # get conv coefficients
   µm <- sapply(c("xPos", "yPos", "zPos"), function(x) {(max(data[,x]) - min(data[,x])) * conv_factor})
@@ -245,80 +237,11 @@ voxelize <- function(data, conv_factor = 5.16, voxel_size = 30, threshold = 1, s
     # summarize how many cells per sample in each voxel
     #dplyr::group_by(group, xPos_vox, yPos_vox, zPos_vox) %>%
     dplyr::group_by(xPos_vox, yPos_vox, zPos_vox) %>%
-    dplyr::summarize(n_samples = length(unique(sample_id))) %>%
-
-    # filter
-    dplyr::filter(n_samples >= threshold)
-
-  # get median and quantiles
-  group_summ <- vox %>%
-
-    # select relevat vars
-    dplyr::select(group, ends_with("_vox")) %>%
-
-    # filter voxels
-    dplyr::left_join(vox_summ %>% dplyr::select(ends_with("_vox")) %>% dplyr::mutate(keep = "yes"), by = c("xPos_vox", "yPos_vox", "zPos_vox")) %>%
-    dplyr::filter(!is.na(keep)) %>%
-
-    # summarize median and IQR
-    dplyr::group_by(group) %>%
-    dplyr::summarize(
-      median_x = median(xPos_vox, na.rm = TRUE),
-      iqr_x = IQR(xPos_vox, na.rm = TRUE),
-      median_y = median(yPos_vox, na.rm = TRUE),
-      iqr_y = IQR(yPos_vox, na.rm = TRUE),
-      median_z = median(zPos_vox, na.rm = TRUE),
-      iqr_z = IQR(zPos_vox, na.rm = TRUE)
-
-    ) %>%
-
-    # to long format
-    tidyr::pivot_longer(cols = -group) %>%
-    tidyr::separate(name, into = c("type", "coordinate")) %>%
-    tidyr::pivot_wider(names_from = type, values_from = value)
-
-  # get median and quantiles
-  if (scrambled == TRUE) {
-    group_scrambled_summ <- vox %>%
-
-      # select relevat vars
-      dplyr::select(group_scrambled, ends_with("_vox")) %>%
-
-      # filter voxels
-      dplyr::left_join(vox_summ %>% dplyr::select(ends_with("_vox")) %>% dplyr::mutate(keep = "yes"), by = c("xPos_vox", "yPos_vox", "zPos_vox")) %>%
-      dplyr::filter(!is.na(keep)) %>%
-
-      # summarize median and IQR
-      dplyr::group_by(group_scrambled) %>%
-      dplyr::summarize(
-        median_x = median(xPos_vox, na.rm = TRUE),
-        iqr_x = IQR(xPos_vox, na.rm = TRUE),
-        median_y = median(yPos_vox, na.rm = TRUE),
-        iqr_y = IQR(yPos_vox, na.rm = TRUE),
-        median_z = median(zPos_vox, na.rm = TRUE),
-        iqr_z = IQR(zPos_vox, na.rm = TRUE)
-
-      ) %>%
-
-      # to long format
-      tidyr::pivot_longer(cols = -group_scrambled) %>%
-      tidyr::separate(name, into = c("type", "coordinate")) %>%
-      tidyr::pivot_wider(names_from = type, values_from = value)
-
-  } else {
-    group_scrambled_summ <- NULL
-  }
-
-
-  # return
-
-
+    dplyr::summarize(n_samples = length(unique(sample_id)))
 
   res <- list(
     data = vox,
-    summary = vox_summ,
-    median_iqr = group_summ,
-    median_iqr_scrambled = group_scrambled_summ
+    summary = vox_summ
   )
 
   return(res)

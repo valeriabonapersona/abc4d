@@ -3,7 +3,7 @@
     "path": "~/surfdrive/Work/PhD/my_packages/abc3d/R/high_density.R",
     "project_path": "R/high_density.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "1605246495",
     "contents": "",
     "dirty": false,
     "created": 1613642411398.0,
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "320,47",
-        "scrollLine": "300"
+        "cursorPosition": "175,22",
+        "scrollLine": "0"
     },
     "folds": "1|20|83|0|\n84|26|109|0|\n110|30|166|0|\n",
-    "lastKnownWriteTime": 1614000473,
+    "lastKnownWriteTime": 1614007376,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1614000473222,
+    "last_content_update": 1614007376692,
     "read_only": false,
     "read_only_alternatives": []
 }
