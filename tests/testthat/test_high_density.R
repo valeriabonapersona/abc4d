@@ -42,6 +42,6 @@ test_that("voxelize() example works", {
   )
   y <- voxelize(x, voxel_size = 100)
 
-  testthat::expect_equal(length(y), 2)
+  testthat::expect_equal(length(y), 3)
 
 })
