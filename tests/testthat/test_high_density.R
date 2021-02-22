@@ -30,3 +30,18 @@ test_that("plotting_all_coordinates_2d() example works", {
   testthat::expect_equal(length(g), 3)
 
 })
+
+
+
+test_that("voxelize() example works", {
+
+  x <- data.frame(
+    xPos = rnorm(100, 300, 100), yPos = rnorm(100, 300, 100), zPos = rnorm(100, 300, 100),
+    group = rep(c("control", "exp"), each = 50),
+    sample_id = rep(c(1:10), each = 10)
+  )
+  y <- voxelize(x, voxel_size = 100)
+
+  testthat::expect_equal(length(y), 2)
+
+})

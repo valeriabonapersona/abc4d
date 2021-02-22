@@ -32,5 +32,5 @@ group = rep(c("a", "b", "c"), each = 100)
 )
 my_cols <- c("black", "green", "red")
 g <- plotting_all_coordinates_2d(x, "group", my_cols)
-ggpubr::ggarrange(g[[1]], g[[2]], g[[3]], nrow = 3, labels = fig_labels, common.legend = TRUE, legend = "top")
+ggpubr::ggarrange(g[[1]], g[[2]], g[[3]], nrow = 3, common.legend = TRUE, legend = "top")
 }

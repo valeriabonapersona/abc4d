@@ -164,3 +164,88 @@ plotting_all_coordinates_2d <- function(cells_df, var_to_colour = NULL, cols = N
 
 }
 
+
+
+
+# voxelize ------------------------------------------------------------
+#' @title Voxelize xyz coordinates
+#'
+#' @description Converts xyz coordinates in pixels to voxels of a specified µm size.
+#' The function summarizes the number of samples per group. It outputs a list where the first element ("data")
+#' is the data voxelized, and the second element ("summary") is the data summarized, i.e. the number of samples
+#' per voxel per group.
+#'
+#'
+#' @param data dataframe with xyz coordinates ("xPos", "yPox", "zPos") for example output of calculate_density().
+#' It includes a variable ("sample_id") that is the quantity that will be summarizes over the group variable ("group").
+#' @param conv_factor number to be used for the conversion. The conversion factor depends on the imaging settings.
+#' For more information, see for example: https://mindresearchfacility.nl/wp-content/uploads/2019/12/Zoom-factor-and-corresponding-NA-and-resolution-by-pixel-size.pdf
+#' Defaults to 5.16
+#' @param voxel_size in µm. Defaults to 30. If you want to specify in pixels, put conv_factor = 1
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' x <- data.frame(
+#' xPos = rnorm(100, 300, 100), yPos = rnorm(100, 300, 100), zPos = rnorm(100, 300, 100),
+#' group = rep(c("control", "exp"), each = 50),
+#' sample_id = rep(c(1:10), each = 10)
+#' )
+#' y <- voxelize(x, voxel_size = 100)
+
+voxelize <- function(data, conv_factor = 5.16, voxel_size = 30) {
+
+  # data is a dataframe with the required variables
+  assertthat::assert_that(is.data.frame(data))
+  # check that there are the correct variable names
+  assertthat::has_name(data, "sample_id")
+  assertthat::has_name(data, "group")
+  assertthat::has_name(data, "xPos")
+  assertthat::has_name(data, "yPos")
+  assertthat::has_name(data, "zPos")
+
+  # conv_factor is a number
+  assertthat::is.number(conv_factor)
+  assertthat::is.number(voxel_size)
+
+  # size conv_factor and voxel_size is 1
+  assertthat::are_equal(length(conv_factor), 1)
+  assertthat::are_equal(length(voxel_size), 1)
+  assertthat::are_equal(voxel_size != 0, FALSE)
+
+
+  # get conv coefficients
+  µm <- sapply(c("xPos", "yPos", "zPos"), function(x) {(max(data[,x]) - min(data[,x])) * conv_factor})
+
+  # cut size
+  µm <- round(µm / voxel_size)
+
+  if(all(µm > 1) == FALSE) {warning("Voxel size requested is smaller than resolution.")}
+
+  vox <- data %>%
+
+    # voxelize xyq coordinates
+    dplyr::mutate(
+      xPos_vox = as.numeric(cut(xPos, µm[[1]])),
+      yPos_vox = as.numeric(cut(yPos, µm[[2]])),
+      zPos_vox = as.numeric(cut(zPos, µm[[3]]))
+    )
+
+  # summarizes n samples
+  vox_summ <- vox %>%
+
+    # summarize how many cells per sample in each voxel
+    dplyr::group_by(group, xPos_vox, yPos_vox, zPos_vox) %>%
+    dplyr::summarize(n_samples = length(unique(sample_id)))
+
+  res <- list(
+    data = vox,
+    summary = vox_summ
+  )
+
+  return(res)
+
+
+}
+
