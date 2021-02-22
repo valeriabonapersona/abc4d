@@ -4,7 +4,13 @@
 \alias{voxelize}
 \title{Voxelize xyz coordinates}
 \usage{
-voxelize(data, conv_factor = 5.16, voxel_size = 30, threshold = 1)
+voxelize(
+  data,
+  conv_factor = 5.16,
+  voxel_size = 30,
+  threshold = 1,
+  scrambled = FALSE
+)
 }
 \arguments{
 \item{data}{dataframe with xyz coordinates ("xPos", "yPox", "zPos") for example output of calculate_density().
@@ -17,6 +23,9 @@ Defaults to 5.16}
 \item{voxel_size}{in µm. Defaults to 30. If you want to specify in pixels, put conv_factor = 1}
 
 \item{threshold}{minimum number of samples in a voxel. Default = 1, meaning that it returns all voxels}
+
+\item{scrambled}{TRUE or FALSE. Determines whether to conduct the summary statistics on a
+"group_scrambled" var or not. Default to FALSE.}
 }
 \value{
 
@@ -25,7 +34,8 @@ Defaults to 5.16}
 Converts xyz coordinates in pixels to voxels of a specified µm size.
 The function summarizes the number of samples per group. It outputs a list where the first element ("data")
 is the data voxelized, and the second element ("summary") is the data summarized, i.e. the number of samples
-per voxel per group, and the third element is a summary per group of the median and IQR of the coordinates.
+per voxel per group; the third element is a summary per group of the median and IQR of the coordinates; the
+fourth element is a summary of median and IQR for the scrambled data (if applicable).
 }
 \examples{
 x <- data.frame(
