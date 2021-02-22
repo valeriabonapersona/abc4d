@@ -24,7 +24,7 @@ of estimation_atlas for types. If not specified, uses all types.}
 Wrapper around dplyr functions to create a summary dataframe
 with information about count and intensity per brain area. In the output:
 count_perthousand refers to the number of cells expressing the protein of
-interest per thousand of total cells in that brain area, while intensity_ave
+interest per thousand of total cells in that brain area, while intensity
 refers to the average intensity of active cells. You can also specify the type
 of cells estimated.
 }

@@ -8,10 +8,10 @@ preprocess_per_region(region_df)
 }
 \arguments{
 \item{region_df}{region_based dataframe. Each row is a brain area ("my_grouping") per sample ("sample_id"), where
-corrected cell count ("cells_perthousand") and average maximum intensity of the protein of interest ("intensity_ave") have been summarized.
+corrected cell count ("cells_perthousand") and average maximum intensity of the protein of interest ("intensity") have been summarized.
 It can be output from summarize_per_region(). The data will be normalized according to "batch",
-and it will be scaled per unit ("cells_perthousand_box_scaled", "intensity_ave_box_scaled"),
-as well as per brain area per unit ("cells_perthousand_box_scaled_ba", "intensity_ave_box_scaled_ba")}
+and it will be scaled per unit ("cells_perthousand_box_scaled", "intensity_box_scaled"),
+as well as per brain area per unit ("cells_perthousand_box_scaled_ba", "intensity_box_scaled_ba")}
 }
 \value{
 
@@ -26,7 +26,7 @@ batch = rep(c(1,1,2,2), each = 5),
 group = rep(c("control", "exp", "exp", "control"), each = 5),
 sample_id = rep(c("a", "b", "c", "d"), each = 5),
 my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 4),
-intensity_ave = sample(10000, 20, replace = TRUE),
+intensity = sample(10000, 20, replace = TRUE),
 cells_perthousand = abs(rnorm(20))
 )
 
