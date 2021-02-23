@@ -36,6 +36,4 @@ cells_perthousand = abs(rnorm(20))
 )
 
 y <- categorize_strategy(x, "control")
-
-
 }

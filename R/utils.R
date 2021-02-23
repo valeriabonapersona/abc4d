@@ -14,4 +14,5 @@ usethis::use_package('rmarkdown') # is this necessary for vignettes?
 usethis::use_package('EnvStats') # for boxcox transformation
 usethis::use_package('ggrepel') # to repel labels in ggplot visual
 usethis::use_package('ks') # for kernel densities
+usethis::use_package("effsize") # to calculate effect sizes
 
