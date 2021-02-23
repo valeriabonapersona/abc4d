@@ -141,7 +141,7 @@ summarize_per_region <- function(xyz_coordinates, estimation_atlas, cells_type =
     dplyr::group_by(sample_id, my_grouping) %>%
     dplyr::summarize(
       count = length(maxInt),
-      intensity = median(maxInt)
+      intensity = mean(maxInt)
     ) %>%
 
     # correct by total cells per brain areas
