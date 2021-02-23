@@ -7,6 +7,7 @@
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2FR%2Fmanage_aba_atlas.R="9244CDF0"
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2FR%2Forder_brain_areas.R="11300F8E"
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2FR%2Fpairwise_analysis.R="351BEDAC"
+~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2FR%2Fstrategy.R="BFF18A86"
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2FR%2Fsummarize_to_region.R="86598061"
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2FR%2Futils.R="B7A11DB9"
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2Ftests%2Ftestthat%2Ftest_cleaning_functions.R="47E7CA8F"
@@ -15,4 +16,5 @@
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2Ftests%2Ftestthat%2Ftest_order_brain_areas.R="51F6FB56"
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2Ftests%2Ftestthat%2Ftest_pairwise_analysis.R="272FFCBD"
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2Ftests%2Ftestthat%2Ftest_regionbased_dataframe.R="9DD629DD"
+~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2Ftests%2Ftestthat%2Ftest_strategy.R="7E28A013"
 ~%2Fsurfdrive%2FWork%2FPhD%2Fmy_packages%2Fabc3d%2Ftests%2Ftestthat%2Ftest_tryout.R="8F85CDA5"

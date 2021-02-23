@@ -2,6 +2,7 @@
 
 export(adapt_estimation_atlas)
 export(calculate_density)
+export(categorize_strategy)
 export(clean_counts)
 export(find_all_children)
 export(find_children)

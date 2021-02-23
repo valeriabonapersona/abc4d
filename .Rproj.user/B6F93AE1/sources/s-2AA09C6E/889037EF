@@ -1,27 +1,27 @@
 {
-    "id": "D28A3D4D",
-    "path": "~/surfdrive/Work/PhD/my_packages/abc3d/R/summarize_to_region.R",
-    "project_path": "R/summarize_to_region.R",
+    "id": "889037EF",
+    "path": "~/surfdrive/Work/PhD/my_packages/abc3d/tests/testthat/test_strategy.R",
+    "project_path": "tests/testthat/test_strategy.R",
     "type": "r_source",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1614011155531.0,
+    "created": 1614073922372.0,
     "source_on_save": false,
-    "relative_order": 4,
+    "relative_order": 5,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "58,19",
-        "scrollLine": "38"
+        "cursorPosition": "20,0",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1614071201,
+    "lastKnownWriteTime": 1614074089,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1614071201978,
+    "last_content_update": 1614074089148,
     "read_only": false,
     "read_only_alternatives": []
 }
