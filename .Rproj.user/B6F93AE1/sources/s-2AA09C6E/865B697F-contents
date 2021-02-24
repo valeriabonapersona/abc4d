@@ -102,7 +102,7 @@ categorize_strategy <- function(region_df, group_to_categorize, lm_or_loess = "l
 #' @param region_df region_based dataframe. Each row is a brain area ("my_grouping") per sample ("sample_id"), where
 #' corrected cell count ("cells_perthousand") and average maximum intensity of the protein of interest ("intensity")
 #' have been summarized. These variables have been preprocessed to "cells_perthousand_box_scaled" and "intensity_box_scaled".
-#' The samples belong to experimental groups ("group") and were processed in batches ("batch").
+#' The samples belong to experimental groups ("group") and were processed in batches ("batch", i.e. one sample per group).
 #' This data frame can be the output of preprocess_per_region().
 #' @param consistency_n_samples number of samples which require to have consistent results in (at least one)
 #' experimental group.
@@ -144,7 +144,7 @@ find_changed_strategy <- function(region_df, consistency_n_samples, comparison_g
   assertthat::has_name(region_df, "cells_perthousand_box_scaled")
   assertthat::has_name(region_df, "intensity_box_scaled")
 
-  tot_samples <- region_df %>% dplyr::group_by(batch) %>% dplyr::count() %>% dplyr::pull(n) %>% max()
+  tot_samples <- length(unique(region_df$batch))
   assertthat::is.count(consistency_n_samples)
   assertthat::assert_that(consistency_n_samples <= tot_samples)
 
