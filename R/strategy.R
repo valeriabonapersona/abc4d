@@ -189,89 +189,94 @@ find_changed_strategy <- function(region_df, consistency_n_samples, comparison_g
 
     # calculate ration of rate of change
     tidyr::pivot_wider(names_from = type, values_from = difference) %>%
-    dplyr::mutate(rate = count / intensity)
+    dplyr::mutate(rate = count / intensity) %>%
 
-
-  # calculate effect sizes
-  effect_sizes <- data.frame()
-  groups_reduced <- unique(region_df$group)[!unique(region_df$group) == comparison_group]
-
-  for (i in unique(region_df$my_grouping)) {
-
-    for (t in groups_reduced) {
-
-
-      dat <- region_df %>%
-        dplyr::filter(my_grouping == i,
-               group %in% c(comparison_group, t)) %>%
-        dplyr::select(my_grouping, batch, group, cells_perthousand, intensity) %>%
-        dplyr::mutate(group = ifelse(group == comparison_group, "control", "exp")) %>%
-        dplyr::mutate(rate = (cells_perthousand + 10) / (intensity + 10)) %>%
-        tidyr::pivot_wider(names_from = group, values_from = c(cells_perthousand, intensity, rate))
-
-      effect_sizes <- effect_sizes %>%
-        dplyr::bind_rows(
-          data.frame(
-            my_grouping = i,
-            group = t,
-            rate_hedges = effsize::cohen.d(dat$rate_exp,
-                                           dat$rate_control,
-                                           hedges.correction = TRUE)$estimate
-
-          )
-        )
-    }
-
-  }
+    # unique identified
+    dplyr::mutate(ba_group = paste(my_grouping, diff, sep = "_"))
 
 
   # probability of change > change for count and intensity in same direction
   first_condition_met <- rate_of_change %>%
 
     # count how often condition met
-    dplyr::group_by(my_grouping, diff) %>%
+    dplyr::group_by(ba_group) %>%
     dplyr::summarize(
       count_positive = sum(count > 0, na.rm = TRUE),
       intensity_positive = sum(intensity > 0, na.rm = TRUE)
     ) %>%
     dplyr::ungroup() %>%
 
-    # filter 1 >= 8 or  <= 2
+    # filter based on cons9stency
     dplyr::mutate(
       extreme_count = ifelse(count_positive >= consistency_n_samples | count_positive <= (tot_samples - consistency_n_samples), TRUE, FALSE),
       extreme_intensity = ifelse(intensity_positive >= consistency_n_samples | intensity_positive <= (tot_samples - consistency_n_samples), TRUE, FALSE),
-      extreme_both = ifelse(extreme_count == TRUE & extreme_intensity == TRUE,
-                               TRUE, FALSE)
+      extreme_both = ifelse(extreme_count == TRUE & extreme_intensity == TRUE, TRUE, FALSE)
     ) %>%
 
     # filter condition met
     dplyr::filter(extreme_both == TRUE) %>%
 
     # get brain areas
-    dplyr::select(my_grouping, diff) %>%
-    dplyr::mutate(ba_group = paste(my_grouping, diff, sep = "_")) %>%
     dplyr::pull(ba_group) %>%
     unique()
 
   if(is.null(first_condition_met)) stop("No brain area met the consistency condition.")
 
-  res <- effect_sizes %>%
-
-    # first_condition
+  # keep only first condition met
+  region_df_filtered <- region_df %>%
     dplyr::mutate(ba_group = paste(my_grouping, group, sep = "_")) %>%
     dplyr::filter(ba_group %in% first_condition_met) %>%
-    dplyr::select(-ba_group) %>%
+    droplevels()
+
+
+  # calculate effect sizes
+  effect_sizes <- data.frame()
+
+  for (i in unique(region_df_filtered$ba_group)) {
+
+
+    filtering_var <- stringr::str_split(i, pattern = "_")[[1]]
+
+
+    dat <- region_df %>%
+      dplyr::filter(my_grouping == filtering_var[[1]],
+                    group %in% c(comparison_group, filtering_var[[2]])) %>%
+      dplyr::select(my_grouping, batch, group, cells_perthousand, intensity) %>%
+      dplyr::mutate(group = ifelse(group == comparison_group, "control", "exp")) %>%
+      dplyr::mutate(rate = (cells_perthousand + 10) / (intensity + 10)) %>%
+      tidyr::pivot_wider(names_from = group, values_from = c(cells_perthousand, intensity, rate))
+
+
+
+    effect_sizes <- effect_sizes %>%
+      dplyr::bind_rows(
+        data.frame(
+          ba_group = i,
+          rate_hedges = effsize::cohen.d(dat$rate_exp,
+                                         dat$rate_control,
+                                         hedges.correction = TRUE)$estimate
+
+        )
+      )
+
+
+  }
+
+
+  res <- effect_sizes %>%
+
+    # get goruping back
+    tidyr::separate(ba_group, into = c("my_grouping", "comparison")) %>%
 
     # second_condition
     dplyr::filter(rate_hedges <= (1/min_change_rate) | rate_hedges >= min_change_rate) %>%
     dplyr::mutate(strategy_towards = ifelse(rate_hedges <= 1/min_change_rate, "intensity","count")) %>%
 
     # clean up
-    dplyr::select(group, my_grouping, strategy_towards) %>%
-    dplyr::rename(comparison = group) %>%
+    dplyr::select(comparison, my_grouping, strategy_towards) %>%
     dplyr::mutate(comparison = paste(comparison, "vs", comparison_group))
 
- # if(nrow(res) == 0) stop("No brain area met the effect size condition.")
+  if(nrow(res) == 0) stop("No brain area met the effect size condition.")
 
   return(res)
 
