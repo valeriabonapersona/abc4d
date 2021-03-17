@@ -83,7 +83,6 @@ adapt_estimation_atlas <- function(estimation_atlas, adj_aba_atlas) {
 #' @param xyz_coordinates dataframe where each row is a cell. It contains the following variables:
 #' 'sample_id' to describe the sample; 'my_grouping' for the brain areas; 'maxInt' for the maximum intensity
 #' of the protein per identified cell.
-#'
 #' @param estimation_atlas estimation atlas already adjusted for the brain areas of interest. Can
 #' be output from adapt_estimation_atlas().
 #' @param cells_type type of cells from estimation atlas to be used for count correction. Look at the variables

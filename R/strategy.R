@@ -195,6 +195,7 @@ find_changed_strategy <- function(region_df, consistency_n_samples, comparison_g
     dplyr::mutate(ba_group = paste(my_grouping, diff, sep = "_"))
 
 
+
   # probability of change > change for count and intensity in same direction
   first_condition_met <- rate_of_change %>%
 
