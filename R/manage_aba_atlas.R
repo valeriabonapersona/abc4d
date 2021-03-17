@@ -169,7 +169,7 @@ find_parents <- function(atlas, child) {
 
 
 
-# # Wrappers ----------------------------------------------------------------
+# Wrappers - delete? ----------------------------------------------------------------
 
 # find_all_children_df <- function(atlas, these_parents) {
 #   res_ls <- lapply(these_parents, function(x) {find_all_children(atlas, x)})
