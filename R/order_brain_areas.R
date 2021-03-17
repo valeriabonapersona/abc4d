@@ -52,17 +52,7 @@ find_intercept <- function(x, y, inter = 0) {
 #' cells_perthousand_box_scaled_ba = c(-2, -1, 2, 1, -3, -2, 4, 2)
 #' )
 #' order_brain_areas(x, order_of_groups = c("0", "90"))
-#'
-#' x <- data.frame(
-#' batch = rep(c(1,1,2,2), each = 5),
-#' group = rep(c("control", "exp", "exp", "control"), each = 5),
-#' sample_id = rep(c("a", "b", "c", "d"), each = 5),
-#' my_grouping = rep(c("CA1", "CA2", "CA3", "DG", "BLA"), 4),
-#' intensity_ave = sample(10000, 20, replace = TRUE),
-#' cells_perthousand = abs(rnorm(20))
-#' )
-#'
-#' find_most_active(x)
+
 
 
 order_brain_areas <- function(region_df, order_of_groups, count_var = "cells_perthousand_box_scaled_ba") {
