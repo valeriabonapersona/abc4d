@@ -3,7 +3,8 @@
 
 <!-- badges: start -->
 ![travis build](https://img.shields.io/travis/valeriabonapersona/abc3d.svg?branch=master)
-
+![license](https://img.shields.io/cpan/l/abc3d)
+![version](https://img.shields.io/github/r-package/v/valeriabonapersona/abc3d)
 <!-- badges: end -->
 
 The goal of abc3d is to ...
