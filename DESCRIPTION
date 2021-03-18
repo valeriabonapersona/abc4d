@@ -4,14 +4,8 @@ Title: Analysis of Brain Cells in 3 Dimensions
 Version: 0.1.0
 Author: Valeria Bonapersona
 Maintainer: Valeria Bonapersona <v.bonapersona-2@umcutrecht.nl>
-Description: abc3d is an R package to analyze three dimensional brain histology data. The goal of this package is to offer functions for quality control, preprocessing 
-and analysis of the data. The quality control steps include: 1) removal of 'false' cells, 2) selecting the right level of spatial specificity, 3) removal of artefacts 
-around the brain and the ventricals, and 4) removal and re-imputation of damaged brain areas. The preprocessing steps include: 1) correction for the size of the brain area, 
-2) normalization, and 3) standardization. The analyses so far incorporated are 1) most active brain areas, 2) spatial distribution within a brain area, 3) strategies of brain areas, 
-4) ordering of brain areas based on their activation. The package assumes that the images have previously undergone cell detection and alignment. The package has been initially created for stainings of the immediate early gene c-fos, 
-and with alignment to the Allen Brain Atlas. However, the majority of the functions can be used for any data with xyz coordinates.
-
-License: MIT licence
+Description: abc3d is an R package to analyze three dimensional brain histology data. The goal of this package is to offer functions for quality control, preprocessing and analysis of the data. The quality control steps include: 1) removal of 'false' cells, 2) selecting the right level of spatial specificity, 3) removal of artefacts around the brain and the ventricals, and 4) removal and re-imputation of damaged brain areas. The preprocessing steps include: 1) correction for the size of the brain area, 2) normalization, and 3) standardization. The analyses so far incorporated are 1) most active brain areas, 2) spatial distribution within a brain area, 3) strategies of brain areas, 4) ordering of brain areas based on their activation. The package assumes that the images have previously undergone cell detection and alignment. The package has been initially created for stainings of the immediate early gene c-fos, and with alignment to the Allen Brain Atlas. However, the majority of the functions can be used for any data with xyz coordinates.
+License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
