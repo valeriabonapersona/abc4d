@@ -2,7 +2,7 @@
 % Please edit documentation in R/cleaning_functions.R
 \name{normalize}
 \alias{normalize}
-\title{Normalize cell counts with boxcox transformation}
+\title{Normalize cell counts}
 \usage{
 normalize(x)
 }
@@ -13,11 +13,11 @@ normalize(x)
 
 }
 \description{
-Wrapper functon to boxcox from EnvStats to be able to normalize
-in one step within pipes.
+Wrapper functon to YeoJohnson transformation from recipes package. Similar transformation to boxcox,
+but it accepts also 0 (and negative) values.
 }
 \examples{
-x <- rpois(100, 6)
+x <- rpois(100, 3)
 y <- normalize(x)
 
 par(mfrow=c(1,2))

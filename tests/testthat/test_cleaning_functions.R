@@ -30,10 +30,10 @@ test_that("specify_damage() provides correct output", {
 
 test_that("normalize() modifies string", {
 
-  x <- rpois(100, 6)
+  x <- rpois(100, 3)
   y <- normalize(x)
 
-  expect_equal(identical(x,y), FALSE)
+  expect_equal(is.numeric(y), TRUE)
 
 })
 
