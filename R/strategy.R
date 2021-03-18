@@ -48,7 +48,7 @@ categorize_strategy <- function(region_df, group_to_categorize, lm_or_loess = "l
   # get prediction line
   line <- ggplot2::ggplot() +
     ggplot2::geom_smooth(data = region_df,
-                ggplot2::aes(cells_perthousand, intensity), method = lm_or_loess)
+                ggplot2::aes(cells_perthousand, intensity), method = lm_or_loess, formula = "y~x")
 
   # from ggplot, I take the predicted values of loess
   gg_lm <- ggplot2::ggplot_build(line)$data[[1]][,c("x","y")]
