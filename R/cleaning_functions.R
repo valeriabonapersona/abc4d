@@ -374,10 +374,10 @@ remove_blinding <- function(data, key, scramble = FALSE) {
 
 
 
-# Normalization with boxcox -----------------------------------------------
-#' @title Normalize cell counts with boxcox transformation
-#' @description Wrapper functon to boxcox from EnvStats to be able to normalize
-#' in one step within pipes.
+# Normalization  -----------------------------------------------
+#' @title Normalize cell counts
+#' @description Wrapper functon to YeoJohnson transformation from recipes package. Similar transformation to boxcox,
+#' but it accepts also 0 (and negative) values.
 #'
 #'
 #' @param x Numeric vector with values to normalize
@@ -386,7 +386,7 @@ remove_blinding <- function(data, key, scramble = FALSE) {
 #' @export
 #'
 #' @examples
-#' x <- rpois(100, 6)
+#' x <- rpois(100, 3)
 #' y <- normalize(x)
 #'
 #' par(mfrow=c(1,2))
@@ -396,8 +396,23 @@ remove_blinding <- function(data, key, scramble = FALSE) {
 
 normalize <- function(x) {
 
-  my_lambda <- EnvStats::boxcox(x, optimize = TRUE)
+  # check that x is a string
+  assertthat::assert_that(is.numeric(x))
 
-  # transform based on lambda
-  EnvStats::boxcoxTransform(x, my_lambda[['lambda']])
+  # wrapper around recipe package
+  y <- data.frame(x)
+  rec <- recipes::recipe(x~1, data = y)
+
+  # get transformation values
+  yj_transform <- recipes::step_YeoJohnson(rec,  recipes::all_numeric())
+
+  # get estimates
+  yj_estimates <- recipes::prep(yj_transform, training = y)
+
+  # get transformed values
+  yj_te <- recipes::bake(yj_estimates, y)
+
+  # return
+  return(yj_te$x)
+
 }
