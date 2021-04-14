@@ -47,21 +47,29 @@ calculate_density <- function(cells_df, n_slice = 10) {
       dplyr::filter(sample_id == x) %>%
       dplyr::select(xPos, yPos, zPos)
 
-    # calculate density at each point
-    k <-  ks::kde(x = y, eval.points = y)
+    if (nrow(y) > 2) {
 
-    # divide based on quantiles
-    k$quantiles <- quantile(k$estimate, probs = my_prob)
-    k$slice <- c(1:n_slice)[cut(k$estimate, breaks = k$quantiles)]
+      # calculate density at each point
+      k <-  ks::kde(x = y, eval.points = y)
 
-    # create output
-    k_res <- k$eval.points %>%
+      # divide based on quantiles
+      k$quantiles <- quantile(k$estimate, probs = my_prob)
+      k$slice <- c(1:n_slice)[cut(k$estimate, breaks = k$quantiles)]
 
-      # create df with info
-      dplyr::mutate(
-        sample_id = x,
-        slice = k$slice
+      # create output
+      k_res <- k$eval.points %>%
+
+        # create df with info
+        dplyr::mutate(
+          sample_id = x,
+          slice = k$slice
         )
+
+    } else {
+      warning("One sample was removed because the number of cells was < 2.")
+      k_res <- NULL
+    }
+
 
     return(k_res)
 
