@@ -24,7 +24,7 @@
 #'
 #' @examples
 #' x <- data.frame(
-#' sample = c(1,1,2,3),
+#' sample_id = c(1,1,2,3),
 #' area = c("BLA", "VTA", "CA1", "DG"),
 #' hemisphere = c("left", "left", "right", "right")
 #' )
