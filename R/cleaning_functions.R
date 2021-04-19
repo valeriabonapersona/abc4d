@@ -41,7 +41,7 @@ specify_damage <- function(sample_id, data) {
   assertthat::assert_that(is.data.frame(data))
 
   # check parent_acronym and acronym are the var names of the df
-  assertthat::has_name(data, "sample")
+  assertthat::has_name(data, "sample_id")
   assertthat::has_name(data, "area")
   assertthat::has_name(data, "hemisphere")
 
@@ -49,7 +49,7 @@ specify_damage <- function(sample_id, data) {
   assertthat::are_equal(length(sample), 1)
 
   data %>%
-    dplyr::filter(sample == sample_id) %>%
+    dplyr::filter(sample_id == sample_id) %>%
     dplyr::mutate(area_hemisphere = paste(area, hemisphere, sep = "_")) %>%
     droplevels()
 
