@@ -142,6 +142,7 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas, dodgy_cells = NU
     assertthat::has_name(dodgy_cells, "sample_id")
     assertthat::has_name(dodgy_cells, "my_grouping")
     assertthat::has_name(dodgy_cells, "threshold")
+    assertthat::assert_that(nrow(dodgy_cells) > 1)
   }
 
   # warning_percentage must be between 0 and 1
