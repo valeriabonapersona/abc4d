@@ -1,7 +1,7 @@
 # abc4d
 <!-- badges: start -->
-![version](https://img.shields.io/github/r-package/v/valeriabonapersona/abc3d)
-[![R-CMD-check](https://github.com/valeriabonapersona/abc3d/workflows/R-CMD-check/badge.svg)](https://github.com/valeriabonapersona/abc3d/actions)
+![version](https://img.shields.io/github/r-package/v/valeriabonapersona/abc4d)
+[![R-CMD-check](https://github.com/valeriabonapersona/abc4d/workflows/R-CMD-check/badge.svg)](https://github.com/valeriabonapersona/abc4d/actions)
 <!-- badges: end -->
 
 abc4d is a pipeline to preprocess and analyze whole-brain microscopy data (over time). You have identified your active cells and aligned them to an atlas and wonder "What next?!", **abc4d** is the place where to start. 
@@ -13,7 +13,7 @@ abc4d is a pipeline to preprocess and analyze whole-brain microscopy data (over 
 </p>
 <br>
 
-abc3d has functions for: 
+abc4d has functions for: 
 1) quality control, 
 2) preprocessing, and 
 3) analyses from the macro- to micro- scale. 
@@ -23,13 +23,13 @@ The resources offered within the package are in alignment of the Allen Brain Ref
 
 ## Get started
 
-You can install the released version of abc3d from [github](https://github.com/valeriabonapersona/abc3d) with:
+You can install the released version of abc4d from [github](https://github.com/valeriabonapersona/abc4d) with:
 
 ``` r
 #If you do not have devtools yet:
 #install.packages("devtools")
 
-devtools::install_github("valeriabonapersona/abc3d")
+devtools::install_github("valeriabonapersona/abc4d")
 ```
 
 All dependencies will be automatically downloaded.
@@ -40,11 +40,11 @@ All dependencies will be automatically downloaded.
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(abc3d)
+library(abc4d)
 ## basic example code
 ```
 
-More thorough tutorials are available [here](google.com). You can also see [this repository](https://github.com/valeriabonapersona/wave) for a thorough analysis example using the abc3d package.
+More thorough tutorials are available [here](google.com). You can also see [this repository](https://github.com/valeriabonapersona/wave) for a thorough analysis example using the abc4d package.
 
 
 ## Project organization
