@@ -35,7 +35,7 @@
 
 ## add checks for data to be a dataframe
 ## add warning is sample_id not in data$sample.
-specify_damage <- function(sample_id, data) {
+specify_damage <- function(sample, data) {
 
   # check atlas is a dataframe
   assertthat::assert_that(is.data.frame(data))
@@ -49,7 +49,7 @@ specify_damage <- function(sample_id, data) {
   assertthat::are_equal(length(sample), 1)
 
   data %>%
-    dplyr::filter(sample_id == sample_id) %>%
+    dplyr::filter(sample_id == sample) %>%
     dplyr::mutate(area_hemisphere = paste(area, hemisphere, sep = "_")) %>%
     droplevels()
 
@@ -159,7 +159,7 @@ clean_counts <- function(sample_id, data, atlas, damaged_areas, dodgy_cells = NU
 
 
   # Specify damaged areas ---------------------------------------------------
-  damaged_areas_sample <- specify_damage(sample_id = sample, data = damaged_areas)
+  damaged_areas_sample <- specify_damage(sample_id, damaged_areas)
 
   # Areas checks ------------------------------------------------------------
   ## correct if you change category variable levels
