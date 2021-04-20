@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 .ai
+.DS_Store
+.Rprofile
