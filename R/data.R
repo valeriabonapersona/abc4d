@@ -61,7 +61,7 @@
 #' Expression of cfos from Allen Brain Atlas API
 #'
 #' A dataset with the tabulate file downloaded from the Allen Brain Atlas API of cfos expression.
-#' The values refer to ISH staining. For more information, see [this link](http://help.brain-map.org/display/api/Quantified+Data+by+Structures).
+#' The values refer to ISH staining. For more information, see the Allen Brain Atlas API (http://help.brain-map.org/display/api/Quantified+Data+by+Structures).
 #'
 #' @format A data frame with 1205 rows and 5 variables:
 #' \describe{
