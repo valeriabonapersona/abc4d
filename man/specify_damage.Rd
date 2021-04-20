@@ -4,16 +4,16 @@
 \alias{specify_damage}
 \title{Specify damaged areas per sample}
 \usage{
-specify_damage(sample_id, data)
+specify_damage(sample, data)
 }
 \arguments{
-\item{sample_id}{String used to select relevant sample.}
-
 \item{data}{Dataframe with summary of damaged brain areas for all samples.
 Long format in which each row is a damaged area. Requires the following
 variables: "sample" with the name of the sample;
 "area" with the acronym of damaged brain area according to Allen Brain Atlas
 nomenclature; "hemisphere" to specify which hemisphere.}
+
+\item{sample_id}{String used to select relevant sample.}
 }
 \value{
 
@@ -25,7 +25,7 @@ and adapt it for later use in cleaning functions.
 }
 \examples{
 x <- data.frame(
-sample = c(1,1,2,3),
+sample_id = c(1,1,2,3),
 area = c("BLA", "VTA", "CA1", "DG"),
 hemisphere = c("left", "left", "right", "right")
 )
