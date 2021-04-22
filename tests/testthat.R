@@ -1,4 +1,4 @@
 library(testthat)
-library(abc3d)
+library(abc4d)
 
-test_check("abc3d")
+test_check("abc4d")

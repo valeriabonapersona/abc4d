@@ -1,15 +1,16 @@
 # abc4d
+
 <!-- badges: start -->
 ![version](https://img.shields.io/github/r-package/v/valeriabonapersona/abc4d)
-[![R-CMD-check](https://github.com/valeriabonapersona/abc4d/workflows/R-CMD-check/badge.svg)](https://github.com/valeriabonapersona/abc4d/actions)
+# [![R-CMD-check](https://github.com/valeriabonapersona/abc4d/workflows/R-CMD-check/badge.svg)](https://github.com/valeriabonapersona/abc4d/actions)
 <!-- badges: end -->
 
-abc4d is a pipeline to preprocess and analyze whole-brain microscopy data (over time). You have identified your active cells and aligned them to an atlas and wonder "What next?!", **abc4d** is the place where to start. 
+abc4d is a pipeline to preprocess and analyze whole-brain microscopy data (over time). You have identified your active cells and aligned them to an atlas and wonder "What next?", **abc4d** is the place where to start. 
 
 
 <br>
 <p align="center">
-  <img src="img/logo_readme.png" width="600"/>
+  <img src="man/figures/logo.svg">
 </p>
 <br>
 
@@ -36,15 +37,21 @@ All dependencies will be automatically downloaded.
 
 
 ## Tutorials
+See 'Articles'. 
 
-This is a basic example which shows you how to solve a common problem:
+<br>
+<p align="center">
+  <img src="img/cheatsheet_1.svg">
+</p>
+<br>
+
 
 ``` r
 library(abc4d)
 ## basic example code
 ```
 
-More thorough tutorials are available [here](google.com). You can also see [this repository](https://github.com/valeriabonapersona/wave) for a thorough analysis example using the abc4d package.
+More thorough tutorials are available [here](google.com). You can also see [this repository](https://github.com/valeriabonapersona/footshock_brain) for a thorough analysis example using the abc4d package.
 
 
 ## Project organization
@@ -86,7 +93,6 @@ Please [cite this project as described here](/CITATION.md).
 
 <br>
 
-## Credits and acknowledgements
-* Marian Joels and Angela Sarabdjitsingh for the impeccable supervision
+## Acknowledgements
 * Heike Schuler for her collaboration in determining quality control and preprocessing steps
 * Keving Kemna for suggesting making this package
