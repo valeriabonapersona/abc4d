@@ -76,7 +76,9 @@ head(raw_counts)
   
 ### Preparing resources
 The abc4d package provides the function clean_counts() for the data cleaning step of the analysis.
-![](img/data_cleaning.svg)
+
+![](img/abc4d_datacleaning.svg)
+
 
 clean_counts() processes one sample (data.frame) at the time. It saves the cleaned cells and a summary of the removed cells in specified folders (path_cleaned and path_removed, respectively). 
 clean_counts() requires resources (see vignette). These were prepared in advance, and are available as .csv files here (https://osf.io/j2sxf/).
