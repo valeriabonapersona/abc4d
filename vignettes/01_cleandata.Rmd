@@ -75,7 +75,7 @@ head(raw_counts)
 
   
 ### Preparing resources
-The abc4d package provides the function clean_counts() for the data cleaning step of the analysis. 
+The abc4d package provides the function clean_counts() for the data cleaning step of the analysis.
 
 ![](img/data_cleaning.svg)
 

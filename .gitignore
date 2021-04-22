@@ -5,3 +5,7 @@
 .ai
 .DS_Store
 .Rprofile
+.Rproj.user
+R/hello.R
+img/*ai
+.Rproj

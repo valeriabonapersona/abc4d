@@ -41,7 +41,7 @@ See 'Articles'.
 
 <br>
 <p align="center">
-  <img src="img/cheatsheet_1.svg">
+  <img src="man/figures/cheatsheet.svg">
 </p>
 <br>
 
