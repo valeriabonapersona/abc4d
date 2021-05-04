@@ -2,15 +2,14 @@
 
 <!-- badges: start -->
 ![version](https://img.shields.io/github/r-package/v/valeriabonapersona/abc4d)
-# [![R-CMD-check](https://github.com/valeriabonapersona/abc4d/workflows/R-CMD-check/badge.svg)](https://github.com/valeriabonapersona/abc4d/actions)
 <!-- badges: end -->
 
-abc4d is a pipeline to preprocess and analyze whole-brain microscopy data (over time). You have identified your active cells and aligned them to an atlas and wonder "What next?", **abc4d** is the place where to start. 
+**abc4d** is a pipeline to preprocess and analyze whole-brain microscopy data (over time). You have identified your active cells and aligned them to an atlas and wonder "What next?", **abc4d** is the place where to start. 
 
 
 <br>
 <p align="center">
-  <img src="man/figures/logo.svg">
+  <img src="man/figures/logo.svg" width = 50% height = 50%>
 </p>
 <br>
 
@@ -35,21 +34,53 @@ devtools::install_github("valeriabonapersona/abc4d")
 
 All dependencies will be automatically downloaded.
 
+## Basic example
+
+``` r
+library(abc4d)
+
+# clean coordinates of one sample
+
+# from coordinates (all_cells) to region-based dataset
+region_raw <- summarize_per_region(all_cells, cell_atlas)
+
+# preprocessing transformations (normalization, standardization, batch effects' corrections)
+region_df <- preprocess_per_region(region_raw)
+
+# pairwaise comparisons of cfos+ cell counts per brain area
+res <- pairwise_activation(region_df)
+
+# find most active brain areas
+most_active <- find_most_active(region_df)
+
+# simulation of most active under the null-hypothesis
+sim_expression <- sim_most_active(weights, samples_per_group = 9, 
+                                  n_exp = 1000, summary = TRUE)
+
+# time: order brain areas based on their activation
+order_ba <- order_brain_areas(region_df, groups)
+
+# categorize brain areas based on their strategy
+strategy_ba <- categorize_strategy(region_df, "0", "lm")
+
+# check whether strategy changes in the experimental groups
+res <- find_changed_strategy(region_df, 6, "0", 2)
+
+
+
+
+```
 
 ## Tutorials
 See 'Articles'. 
 
+## Cheatsheet
 <br>
 <p align="center">
   <img src="man/figures/cheatsheet.svg">
 </p>
 <br>
 
-
-``` r
-library(abc4d)
-## basic example code
-```
 
 More thorough tutorials are available [here](google.com). You can also see [this repository](https://github.com/valeriabonapersona/footshock_brain) for a thorough analysis example using the abc4d package.
 
