@@ -102,7 +102,7 @@ order_brain_areas <- function(region_df, order_of_groups, count_var = "cells_per
 
       # get intercept
       dplyr::group_by(my_grouping) %>%
-      dplyr::summarize(inter = ifelse(any(cells_median >= 0), find_intercept(cells_median, group), NA)) %>%
+      dplyr::summarize(pseudotime = ifelse(any(cells_median >= 0), find_intercept(cells_median, group), NA)) %>%
 
       # clean_up
       dplyr::ungroup() %>%
