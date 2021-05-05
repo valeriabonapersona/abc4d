@@ -34,45 +34,6 @@ devtools::install_github("valeriabonapersona/abc4d")
 
 All dependencies will be automatically downloaded.
 
-## Basic example
-
-``` r
-library(abc4d)
-
-# clean coordinates of one sample
-
-# from coordinates (all_cells) to region-based dataset
-region_raw <- summarize_per_region(all_cells, cell_atlas)
-
-# preprocessing transformations (normalization, standardization, batch effects' corrections)
-region_df <- preprocess_per_region(region_raw)
-
-# pairwaise comparisons of cfos+ cell counts per brain area
-res <- pairwise_activation(region_df)
-
-# find most active brain areas
-most_active <- find_most_active(region_df)
-
-# simulation of most active under the null-hypothesis
-sim_expression <- sim_most_active(weights, samples_per_group = 9, 
-                                  n_exp = 1000, summary = TRUE)
-
-# time: order brain areas based on their activation
-order_ba <- order_brain_areas(region_df, groups)
-
-# categorize brain areas based on their strategy
-strategy_ba <- categorize_strategy(region_df, "0", "lm")
-
-# check whether strategy changes in the experimental groups
-res <- find_changed_strategy(region_df, 6, "0", 2)
-
-
-
-
-```
-
-## Tutorials
-See 'Articles'. 
 
 ## Cheatsheet
 <br>
@@ -84,6 +45,80 @@ See 'Articles'.
 
 More thorough tutorials are available [here](google.com). You can also see [this repository](https://github.com/valeriabonapersona/footshock_brain) for a thorough analysis example using the abc4d package.
 
+
+## Pipeline example
+Example analysis from beginning to end.
+
+### Preparation
+``` r
+library(abc4d)
+
+# load sample data
+data("example")
+
+# load 
+data("atlas_tree")
+data("atlas_estimation")
+
+### Atlas preparation
+# Preparation
+## prepare atlases for your own needs
+grouped_ba <- c("CA1", "DG", "BLA", "AAA")
+
+# find all children of each grouped brain area
+children_ls <- sapply(grouped_ba, function(x) c(x, find_all_children(atlas = atlas_tree, parent = x)))
+## if you get a warning about AAA all is correct
+
+# allen brain atlas adapted to own necessities
+my_atlas <- reshape2::melt(children_ls, value.name = "acronym", level = "_parent") %>% 
+rename(my_grouping = L_parent) %>% 
+right_join(atlas_tree, by = "acronym")
+
+# now prepare the estimation atlas
+my_estimation_atlas <- adapt_estimation_atlas(atlas_estimation, my_atlas)
+```
+
+### Preprocessing
+``` r
+# Preprocessing
+## from coordinates (example dataset) to region-based dataset
+region_raw <- summarize_per_region(example, my_estimation_atlas)
+
+## add the meta information to your samples
+meta <- data.frame(
+sample_id = as.character(c(13:14, 16:20, 22:25, 27)),
+batch = rep(c(1:3), each = 4),
+group = c(0, 90, 180, 30, 180, 90, 30, 0, 90, 180, 0, 30)
+)
+
+region_raw <- region_raw %>% 
+left_join(meta, by = "sample_id")
+
+## preprocessing transformations (normalization, standardization, batch effects' corrections)
+region_df <- preprocess_per_region(region_raw)
+
+```
+
+### Analysis 
+``` r
+## pairwaise comparisons of cfos+ cell counts per brain area
+pairwise_res <- pairwise_activation(region_df)
+
+# find most active brain areas
+most_active <- find_most_active(region_df)
+
+# time: order brain areas based on their activation
+order_ba <- order_brain_areas(region_df, c(0, 30, 90, 180))
+
+# categorize brain areas based on their strategy
+strategy_ba <- categorize_strategy(region_df, "0", "lm")
+
+# check whether strategy changes in the experimental groups
+strategy_change <- find_changed_strategy(region_df, 2, "0", 2)
+```
+
+## Tutorials
+See 'Articles'. 
 
 ## Project organization
 This package was created with [devtools](https://cran.r-project.org/web/packages/devtools/index.html) and it follows the recommended organization.
